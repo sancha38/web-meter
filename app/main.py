@@ -5,7 +5,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import NullPool
 #from core.coremodel import Base
 from flask import Flask 
-from app import RegisterAPI
+from app.resources import RegisterAPI
 
 class DbConnectionManager:
     def __init__(self, db):
