@@ -6,7 +6,7 @@ from sqlalchemy.pool import NullPool
 #from core.coremodel import Base
 from flask import Flask 
 from app.resources import RegisterAPI
-
+from app.models import Base
 class DbConnectionManager:
     def __init__(self, db):
         try:
@@ -53,7 +53,9 @@ class Application():
         print(dbpath)
         db_type = 'sqlite'
         db_info = {'drivername': db_type, 'database': dbpath}
+        print(db_info)
         dburl = URL(**db_info)
+        print(dburl)
         db = {'connectionPath':dburl,"schema":None}
         configdb_conn = DbConnectionManager(db)
         application = Flask(__name__)

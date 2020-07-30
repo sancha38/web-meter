@@ -3,8 +3,10 @@ import os
 import sys
 #from app.main import app 
 from app.main import Application
-basepath = os.path.dirname(__file__)
+basepath  = os.getcwd()
+print(basepath)
 p = os.path.join(basepath,"db/product_store.db")
+print(p)
 static = os.path.join(basepath,"static")
 
 app = Application.init(static,p)
