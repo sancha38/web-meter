@@ -1,4 +1,4 @@
-from flask_restful import Api, Resource
+#from flask_restful import Api, Resource
 from flask import request, Response, json
 
 from app.models import RawProductConfig,FinishedProductConfig
@@ -33,8 +33,7 @@ class RegisterAPI:
 
 
 
-
-
+"""
 class RawProduct(Resource):
     def get(self,params):
         pass
@@ -74,3 +73,4 @@ class Configuration(Resource):
 
 class Report(Resource):
     pass
+"""
