@@ -19,14 +19,14 @@ class RegisterAPI:
             sesion = self.db.getSession()
             listd = RawProductConfig.list_raw_product_cfg(sesion,'industry1')
             print(listd)
-            y = json.dumps(listd)
             code =200
-            print(y)
-        except:
-            pass
+        except Exception as e:
+            print(e)
+            listd = {"error": "there are some issue"}
+            code = 504
         finally:
             self.db.closeSession(sesion)
-            return Response(response=y,status=code,mimetype='application/json')
+            return Response(response=json.dumps(listd),status=code,mimetype='application/json')
 
     def finished_Product(self):
         pass

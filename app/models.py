@@ -23,9 +23,17 @@ class RawProductConfig(Base):
     def list_raw_product_cfg(cls,session,industryType):
         print(session)
         print(industryType)
-        query =  session.query(cls).filter_by(industry = industryType)
-        print(query)
-        return query.all()
+        query =  session.query(cls).filter_by(industry=industryType).all()
+        
+        return [ obj.toJson() for obj in query]
+    
+    def toJson(self):
+        return {
+            "id": self.id,
+            "industry": self.industry,
+            "material": self.material,
+            "size" : self.size
+        }
 
 class FinishedProductConfig(Base):
     __tablename__ = 'finished_product_cfg'
@@ -37,5 +45,5 @@ class FinishedProductConfig(Base):
 
     @classmethod
     def list_finished_product_cfg(cls,session,industryType):
-        return session.query(cls).filter_by(industry = industryType).all() 
+        return session.query(cls).filter_by(industry = industryType).first() 
 
