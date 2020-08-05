@@ -1089,11 +1089,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _home__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./home */ "./src/app/home/index.ts");
 /* harmony import */ var _login__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./login */ "./src/app/login/index.ts");
 /* harmony import */ var _register__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./register */ "./src/app/register/index.ts");
-/* harmony import */ var _component_input__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/input */ "./src/app/component/input.ts");
-/* harmony import */ var _entry_raw_material__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./_entry/raw_material */ "./src/app/_entry/raw_material.ts");
-/* harmony import */ var _entry_finished_material__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./_entry/finished_material */ "./src/app/_entry/finished_material.ts");
-/* harmony import */ var _header_header_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./header/header.component */ "./src/app/header/header.component.ts");
-/* harmony import */ var _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @ng-bootstrap/ng-bootstrap */ "./node_modules/@ng-bootstrap/ng-bootstrap/fesm5/ng-bootstrap.js");
+/* harmony import */ var _entry_raw_material__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./_entry/raw_material */ "./src/app/_entry/raw_material.ts");
+/* harmony import */ var _entry_finished_material__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./_entry/finished_material */ "./src/app/_entry/finished_material.ts");
+/* harmony import */ var _header_header_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./header/header.component */ "./src/app/header/header.component.ts");
+/* harmony import */ var _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @ng-bootstrap/ng-bootstrap */ "./node_modules/@ng-bootstrap/ng-bootstrap/fesm5/ng-bootstrap.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1121,7 +1120,6 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
-
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -1129,7 +1127,7 @@ var AppModule = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"])({
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
-                _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_18__["NgbModule"],
+                _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_17__["NgbModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormsModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_2__["ReactiveFormsModule"],
                 _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HttpClientModule"],
@@ -1141,10 +1139,9 @@ var AppModule = /** @class */ (function () {
                 _home__WEBPACK_IMPORTED_MODULE_11__["HomeComponent"],
                 _login__WEBPACK_IMPORTED_MODULE_12__["LoginComponent"],
                 _register__WEBPACK_IMPORTED_MODULE_13__["RegisterComponent"],
-                _component_input__WEBPACK_IMPORTED_MODULE_14__["InputComponent"],
-                _entry_raw_material__WEBPACK_IMPORTED_MODULE_15__["RawMaterial"],
-                _entry_finished_material__WEBPACK_IMPORTED_MODULE_16__["FinishedMaterial"],
-                _header_header_component__WEBPACK_IMPORTED_MODULE_17__["HeaderComponent"]
+                _entry_raw_material__WEBPACK_IMPORTED_MODULE_14__["RawMaterial"],
+                _entry_finished_material__WEBPACK_IMPORTED_MODULE_15__["FinishedMaterial"],
+                _header_header_component__WEBPACK_IMPORTED_MODULE_16__["HeaderComponent"]
             ],
             providers: [
                 _guards__WEBPACK_IMPORTED_MODULE_8__["AuthGuard"],
@@ -1201,85 +1198,6 @@ var appRoutes = [
     { path: '**', redirectTo: '' }
 ];
 var routing = _angular_router__WEBPACK_IMPORTED_MODULE_0__["RouterModule"].forRoot(appRoutes);
-
-
-/***/ }),
-
-/***/ "./src/app/component/component.scss":
-/*!******************************************!*\
-  !*** ./src/app/component/component.scss ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ""
-
-/***/ }),
-
-/***/ "./src/app/component/input.html":
-/*!**************************************!*\
-  !*** ./src/app/component/input.html ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "\n<div class=\"input-group mb-3\" *ngIf =\"display\">\n    <div class=\"input-group-prepend\">\n        <label class=\"input-group-text\" for=\"id\">{{lable}}</label>\n    </div>\n   \n    <select class=\"custom-select\" id=\"id\" (change)=\"onChange($event)\">\n      <option value=\"all\" selected>All</option>\n      <option [value]=\"m.key\" *ngFor=\"let m of lbvalue |keyvalue\">{{m.value}}</option>\n    </select>\n  \n</div>\n "
-
-/***/ }),
-
-/***/ "./src/app/component/input.ts":
-/*!************************************!*\
-  !*** ./src/app/component/input.ts ***!
-  \************************************/
-/*! exports provided: InputComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "InputComponent", function() { return InputComponent; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (undefined && undefined.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-var InputComponent = /** @class */ (function () {
-    function InputComponent() {
-        this.disable = false;
-    }
-    InputComponent.prototype.onChange = function (event) {
-    };
-    __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", Object)
-    ], InputComponent.prototype, "id", void 0);
-    __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", Object)
-    ], InputComponent.prototype, "lbvalue", void 0);
-    __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", String)
-    ], InputComponent.prototype, "lable", void 0);
-    __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", String)
-    ], InputComponent.prototype, "types", void 0);
-    InputComponent = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
-            selector: 'inputbox',
-            template: __webpack_require__(/*! ./input.html */ "./src/app/component/input.html"),
-            styles: [__webpack_require__(/*! ./component.scss */ "./src/app/component/component.scss")]
-        })
-    ], InputComponent);
-    return InputComponent;
-}());
-
 
 
 /***/ }),
@@ -1696,7 +1614,7 @@ __webpack_require__.r(__webpack_exports__);
 var environment = {
     production: false,
     apiUrl: 'http://localhost:4000',
-    origin: 'http://' + document.domain + ':4200/v1/',
+    origin: 'http://' + document.domain + '/v1/',
     api: 'api',
     envName: 'dev',
 };
