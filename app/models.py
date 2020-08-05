@@ -27,6 +27,23 @@ class RawProductConfig(Base):
         
         return [ obj.toJson() for obj in query]
     
+    @classmethod
+    def listRawItemSize(cls,session,industryType):
+        result =  session.query(cls.material,cls.size).filter_by(industry=industryType).all()
+        itemsizemap = {}
+        materials = {}
+        for item,size in result:
+            try:
+                itemlist = itemsizemap[item]
+            except Exception:
+                itemlist = {}
+            materials[item]=item
+            itemlist["{0}-{1}".format(item,size)] = size
+            itemsizemap[item] = itemlist
+            
+        
+        return materials,itemsizemap
+
     def toJson(self):
         return {
             "id": self.id,
@@ -45,5 +62,34 @@ class FinishedProductConfig(Base):
 
     @classmethod
     def list_finished_product_cfg(cls,session,industryType):
-        return session.query(cls).filter_by(industry = industryType).first() 
+        query = session.query(cls).filter_by(industry = industryType).all()
+        print(query)
+        return [ obj.toJson() for obj in query]
+    
+    
+    def toJson(self):
+        return {
+            "id": self.id,
+            "industry": self.industry,
+            "item_name": self.item_name,
+            "unit" : self.unit,
+            "product_type": self.cfg
+        }
 
+class GlobalProductCfg(Base):
+    __tablename__ = 'global_cfg'
+    id = Column(Integer,primary_key = True)
+    product_type = Column(String(100))
+    raw_material_arr = Column(String(100))
+    
+    @classmethod
+    def list_global_product_cfg(cls,session):
+        query = session.query(cls).all()
+        print(query)
+        cfgJson = {}
+        for obj in query:
+            cfgJson[obj.product_type]=obj.raw_material_arr.split(",")
+        return cfgJson
+    
+    def toJson(self):
+        return 

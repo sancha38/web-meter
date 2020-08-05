@@ -1,10 +1,10 @@
 from sqlalchemy.engine.url import URL
 
+from flask import Flask,redirect,session,request,send_from_directory,render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import NullPool
-#from core.coremodel import Base
-from flask import Flask 
+
 from app.resources import RegisterAPI
 from app.models import Base
 class DbConnectionManager:
@@ -59,7 +59,34 @@ class Application():
         db = {'connectionPath':dburl,"schema":None}
         configdb_conn = DbConnectionManager(db)
         application = Flask(__name__)
+        application.template_folder=static
+        application.static_folder=static
         application.config['configdb']=configdb_conn
         application.config['txndb'] = ''
+        @application.route('/<path:path>')
+        def send_js(path):
+            #print(app.static_folder)
+            return send_from_directory(application.static_folder, path)
+
+        @application.route("/app/<path:path>") 
+        def proc_list(path): 
+            print(path)
+            print(application.static_folder)
+            return render_template('index.html')
+
+
+        @application.route("/login") 
+        def login(): 
+            print("home")
+            print(application.static_folder)
+            return render_template('index.html')
+
+        @application.route("/") 
+        def home_view(): 
+            print("home")
+            print(application.static_folder)
+            return render_template('index.html')
+        
         RegisterAPI("",application)
+
         return application

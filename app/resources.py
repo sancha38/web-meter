@@ -1,13 +1,14 @@
 #from flask_restful import Api, Resource
 from flask import request, Response, json
 
-from app.models import RawProductConfig,FinishedProductConfig
+from app.models import RawProductConfig,FinishedProductConfig,GlobalProductCfg
+
 class RegisterAPI:
     def __init__(self, wsgi_path,application):
         API = "/v1/api/" 
         print(API)
         self.db = application.config['configdb']
-        application.add_url_rule(API+'login','login',self.login,methods=['POST'])
+       
         application.add_url_rule(API+'rawproduct','rawproduct',self.rawproduct, methods=['GET'])
         application.add_url_rule(API+'finishedproduct','finishedproduct',self.finished_Product,methods=['GET'])
 
@@ -17,11 +18,16 @@ class RegisterAPI:
     def rawproduct(self):
         try:
             sesion = self.db.getSession()
-            listd = RawProductConfig.list_raw_product_cfg(sesion,'industry1')
-            print(listd)
+            item,itemsizemap = RawProductConfig.listRawItemSize(sesion,'industry2')
+            listd ={
+                "material":item,
+                "sizemap":itemsizemap
+            }
+            
+            #print(listd)
             code =200
         except Exception as e:
-            print(e)
+            #print(e)
             listd = {"error": "there are some issue"}
             code = 504
         finally:
@@ -29,7 +35,21 @@ class RegisterAPI:
             return Response(response=json.dumps(listd),status=code,mimetype='application/json')
 
     def finished_Product(self):
-        pass
+        try:
+            sesion = self.db.getSession()
+            listd = FinishedProductConfig.list_finished_product_cfg(sesion,'industry2')
+            global_cfg = GlobalProductCfg.list_global_product_cfg(sesion)
+            listd = {"data":listd , "cfg":global_cfg}
+            print(listd)
+            code =200
+        except Exception as e:
+            #print(e)
+            listd = {"error": "there are some issue"}
+            code = 504
+        finally:
+            self.db.closeSession(sesion)
+            return Response(response=json.dumps(listd),status=code,mimetype='application/json')
+
 
 
 
