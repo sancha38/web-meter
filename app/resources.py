@@ -40,7 +40,7 @@ class RegisterAPI:
             password = params['password']
             userObj = USER.get_user_by_name(sesion,username)
             if userObj.password == password:
-                encoded = jwt.encode(userObj.json(), 'secret', algorithm='HS256')
+                encoded = jwt.encode(userObj.json(), 'secret', algorithm='HS256').decode('utf-8')
                 body = userObj.json()
                 body['token']= encoded
                 code =200
