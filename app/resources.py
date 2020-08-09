@@ -47,6 +47,7 @@ class RegisterAPI:
             else:
                 body = { "error": { "message": 'Username or password is incorrect' } }
                 code = 400
+            print("body ",body)
         except NoResultFound:
             body = { "error": { "message": 'Username or password is incorrect' } }
             code = 400
@@ -55,6 +56,7 @@ class RegisterAPI:
             body = { "error": { "message": 'there are backend issue' } }
             code = 500
         finally:
+            self.db.closeSession(sesion)
             return Response(response=json.dumps(body),status=code,mimetype='application/json')
     
 
