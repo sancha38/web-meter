@@ -108,7 +108,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "body{\n    background-color: #25274d;\n}\n.contact{\n    padding: 2% 1%;\n    height: 400px;\n}\n.inventory{\n    background: #ff9b00;\n    padding: 2%;\n    border-top-right-radius: 0.5rem;\n    border-bottom-right-radius: 0.5rem;\n    height: 100vh;\n\n}\n.contact-info{\n    margin-top:10%;\n}\n.contact-info img{\n    margin-bottom: 15%;\n}\n.contact-info h2{\n    margin-bottom: 10%;\n}\n.col-md-9{\n    background: #fff;\n    padding: 3%;\n    border-top-left-radius: 0.5rem;\n    border-bottom-left-radius: 0.5rem;\n}\n.contact-form label{\n    font-weight:600;\n}\n.contact-form button{\n    background: #25274d;\n    color: #fff;\n    font-weight: 600;\n    width: 25%;\n}\n.contact-form button:focus{\n    box-shadow:none;\n}\nselect option{\n    margin: 40px;\n  background: rgba(9, 19, 105, 0.3);\n  color: #fff;\n  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);\n}"
+module.exports = "body{\n    background-color: #25274d;\n}\n.contact{\n    padding: 2% 1%;\n    height: 400px;\n}\n.inventory{\n    background: #ff9b00;\n    padding: 2%;\n    border-top-right-radius: 0.5rem;\n    border-bottom-right-radius: 0.5rem;\n    height: 100%;\n\n}\n.contact-info{\n    margin-top:10%;\n}\n.contact-info img{\n    margin-bottom: 15%;\n}\n.contact-info h2{\n    margin-bottom: 10%;\n}\n.col-md-9{\n    background: #fff;\n    padding: 3%;\n    border-top-left-radius: 0.5rem;\n    border-bottom-left-radius: 0.5rem;\n}\n.contact-form label{\n    font-weight:600;\n}\n.contact-form button{\n    background: #25274d;\n    color: #fff;\n    font-weight: 600;\n    width: 25%;\n}\n.contact-form button:focus{\n    box-shadow:none;\n}\nselect option{\n    margin: 40px;\n  background: rgba(9, 19, 105, 0.3);\n  color: #fff;\n  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);\n}\ntd {\n    text-align: center;\n  }\nth{\n    text-align: center;\n  }\ni {\n    display: inline-block;\n    margin-right: 1em;\n  }\nli\n  {\n    list-style-type: none;\n    padding:5px;\n  }\nul{padding-left:0px;}\n.activebooks\n  {\n  border:1px solid #848FD8;\n  padding:0px 10px;\n  margin-top:-2px;\n  border-top-left-radius: 10px;\n  border-bottom-left-radius: 10px;\n  border-top-right-radius: 10px;\n  border-bottom-right-radius: 10px;\n  \n  }\n.dropdown .fa-plus\n  { \n  padding:4px;\n  margin-top:-2px;\n  margin-right:0px;\n  }\n.list\n  {\n    padding-left:20px;\n  }\n.dropdown\n  {\n    margin-left:-15px;\n  }\n.submenu > li\n  { display:list-item;\n  list-style-type: none;\n  color: #fff;\n  \n  }\n.submenu{\n    padding-left:12px;\n  }\n.submenu > li:hover\n  {\n    color:blue;\n  }\n.category::before, .category::after, .submenu::after\n  {\n    content:\" \";\n    white-space:pre;\n  }\ni.fa.fa-circle-thin\n  {\n    color:#00ff74;\n  }\nli:hover{\n    background-color:rgba(255, 255, 255, 0.25);\n    cursor:pointer;\n  }\n.pull-right {\n    float: right !important;\n}"
 
 /***/ }),
 
@@ -119,7 +119,7 @@ module.exports = "body{\n    background-color: #25274d;\n}\n.contact{\n    paddi
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"contact\">\n\t<div class=\"row\">\n\t\t<div class=\"col-md-9\">\n\t\t\t<div class=\"contact-form\">\n        <div class=\"form-row\">\n          <div class=\"form-group col-md-4\">\n            \n                  <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Date</label>\n                  <div class=\"input-group\">\n                    <input class=\"form-control\" placeholder=\"yyyy-mm-dd\"\n                        name=\"dp\" [(ngModel)]=\"model\" ngbDatepicker #d=\"ngbDatepicker\">\n                     <div class=\"input-group-append\">\n                      <button class=\"btn btn-outline-secondary calendar\" (click)=\"d.toggle()\" type=\"button\"></button>\n                    </div>\n                  </div>\n                   \n          </div>\n          <div class=\"form-group col-md-4\">\n            <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Product</label>\n            <select class=\"form-control\" [(ngModel)]=\"selectedProduct\" (change)=\"onChange()\"  >\n              <option  [ngValue]=\"m\" *ngFor=\"let m of finishmaterialcfg \">{{m.item_name}}</option>\n            </select>\n           </div>\n          <div class=\"form-group col-md-4\">\n            <label for=\"inputPassword4\" class=\"col-sm-2 col-form-label\">{{productUnit}}</label>\n            <input type=\"password\" class=\"form-control\" id=\"inputPassword4\" placeholder=\"weight/quantity\">\n          </div>\n        </div>\n        <div class=\"form-row\" >\n          <div class=\"form-group col-md-4\" *ngFor=\"let material of rawMaterialcfg\" >\n            <label for=\"inputEmail4\" class=\"col-sm-4 col-form-label\">{{material.label}}</label>\n            <div class=\"input-group\">\n              <div class=\"input-group-prepend col-sm-7\">\n                <select class=\"form-control\"  (change)=\"onChange()\"  >\n                  <option  [ngValue]=\"m\" *ngFor=\"let m of material.material\">{{m}}</option>\n                </select>\n              </div>\n              <input type=\"text\" class=\"form-control\" id=\"validationCustomUsername\" placeholder=\"weight\" aria-describedby=\"inputGroupPrepend\" required>\n              <div class=\"input-group-append\">\n                <span class=\"input-group-text\">Kgs.</span>\n              </div>\n            </div>\n          \n\n          </div>\n\n        </div>\n\t\t\n\t\t\t\t<div class=\"form-group \" >    \n\t\t\t\t  <div class=\"col-sm-offset-4 col-sm-*\" style=\"left:50%;\">\n\t\t\t\t  \t<button type=\"submit\" class=\"btn btn-default center-block \">add</button>\n\t\t\t\t  </div>\n\t\t\t\t</div>\n      </div>\n      <table class=\"table table-striped table-bordered table-hover\" >\n        <thead class=\"thead-dark\">\n          <tr>\n            <th scope=\"col\">#</th>\n            <th scope=\"col\">Date</th>\n            <th scope=\"col\">Product</th>\n            <th scope=\"col\">Weight(Kg.)/Nos</th>\n            <th scope=\"col\" *ngFor=\"let m of rawMaterialcfg\">{{m.label}}</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr *ngFor=\"let rawTxn of dataTosave;let indexOfelement=index;\">\n            <th scope=\"row\">{{indexOfelement}}</th>\n            <td>{{rawTxn.date}}</td>\n            <td>{{rawTxn.material}}</td>\n            <td>{{rawTxn.weight}}</td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n    <div class=\"col-md-3 inventory\">\n\t\t\t<div class=\"contact-info\">\n\t\t\t\t<img src=\"https://image.ibb.co/kUASdV/contact-image.png\" alt=\"image\"/>\n\t\t\t\t<h2>Contact Us</h2>\n\t\t\t\t<h4>We would love to hear from you !</h4>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n"
+module.exports = "<div class=\"contact\">\n  <div class=\"alert alert-success\" role=\"alert\" *ngIf=\"flag\">\n    Data saved successfully.\n  </div>\n\t<div class=\"row\">\n    \n\t\t<div class=\"col-md-9\">\n      \n\t\t\t<div class=\"contact-form\">\n        <div class=\"form-row\">\n          <div class=\"form-group col-md-4\">\n            \n                  <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Date</label>\n                  <div class=\"input-group\">\n                    <input class=\"form-control\" placeholder=\"yyyy-mm-dd\"\n                        name=\"dp\" [(ngModel)]=\"recdate\" ngbDatepicker #d=\"ngbDatepicker\" required>\n                     <div class=\"input-group-append\">\n                      <button class=\"btn btn-outline-secondary calendar\" (click)=\"d.toggle()\" type=\"button\"></button>\n                    </div>\n                  </div>\n                   \n          </div>\n          <div class=\"form-group col-md-4\">\n            <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Product</label>\n            <select class=\"form-control\" [(ngModel)]=\"selectedProduct\" (change)=\"onChange()\"  required>\n              <option  [ngValue]=\"m\" *ngFor=\"let m of finishmaterialcfg \">{{m.item_name}}</option>\n            </select>\n           </div>\n          <div class=\"form-group col-md-4\">\n            <label for=\"inputPassword4\" class=\"col-sm-2 col-form-label\">{{productUnit}}</label>\n            <input type=\"text\" class=\"form-control\" [(ngModel)]=\"weight\" placeholder=\"weight/quantity\" required>\n          </div>\n        </div>\n        <div class=\"form-row\" >\n          <div class=\"form-group col-md-4\" *ngFor=\"let material of rawMaterialcfg;let indexOfelement=index;\" >\n            <label  class=\"col-sm-8 col-form-label\">{{material.label}}</label>\n            <div class=\"input-group\">\n              <div class=\"input-group-prepend col-sm-7\">\n                <select class=\"form-control\" name=\"material\" (change)=\"onChange()\" [(ngModel)]=\"rawMaterialConsumed[indexOfelement].material\" required>\n                  <option  [ngValue]=\"m\" *ngFor=\"let m of material.material\">{{m}}</option>\n                </select>\n              </div>\n              <input type=\"hidden\" [value]=\"recdate\" [(ngModel)]=\"rawMaterialConsumed[indexOfelement].date\">\n              <input type=\"hidden\" id=\"myFile\" value=\"1234\">\n              <input type=\"text\" class=\"form-control\" name=\"weight\" [(ngModel)]=\"rawMaterialConsumed[indexOfelement].weight\" id=\"validationCustomUsername\" placeholder=\"weight\" aria-describedby=\"inputGroupPrepend\" required>\n              <div class=\"input-group-append\">\n                <span class=\"input-group-text\">Kgs.</span>\n              </div>\n            </div>\n          \n\n          </div>\n\n        </div>\n\t\t\n\t\t\t\t<div class=\"form-group \" >    \n\t\t\t\t  <div class=\"col-sm-offset-4 col-sm-6\" style=\"left:50%;\">\n\t\t\t\t  \t<button type=\"submit\" class=\"btn btn-default\" (click)=\"add()\">add</button>\n\t\t\t\t  </div>\n        </div>\n        \n      <div class=\"row\" *ngIf=\"dataTosave?.length > 0\">\n        <table class=\"table table-striped table-bordered table-hover\" >\n          <thead class=\"thead-dark\">\n          <tr>\n              <th scope =\"col\" rowspan=\"2\">#</th>\n              <th rowspan=\"2\">Date</th>\n              <th rowspan=\"2\">Product</th>\n              <th rowspan=\"2\">Weight</th>\n              <th colspan=\"2\">Raw1</th>\n              <th colspan=\"2\">Raw2</th>\n              <th colspan=\"2\">Raw3</th>\n              <th colspan=\"2\">Raw4</th>\n          </tr>\n          <tr>\n            <th>name</th>\n            <th>Weight</th>\n            <th>name</th>\n            <th>Weight</th>\n            <th>name</th>\n            <th>Weight</th>\n            <th>name</th>\n            <th>weight</th>\n        </tr>\n        </thead>\n       \n        <tbody>\n          <tr *ngFor=\"let txn of dataTosave;let indexOfelement=index;\">\n            <th scope=\"row\">{{indexOfelement+1}}</th>\n            <td>{{txn.date}}</td>\n            <td>{{txn.product}}</td>\n            <td>{{txn.value}}{{txn.unit}}</td>\n            <ng-container *ngFor=\"let rawtxn of txn.rawMaterialList\">\n              <td>{{rawtxn.material}}</td>\n              <td>{{rawtxn.weight}}</td>\n            </ng-container>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n      <div class=\"form-group \" *ngIf=\"dataTosave?.length > 0\">    \n        <div class=\"col-sm-offset-4 col-sm-6\" style=\"left:50%;\">\n          <button type=\"submit\" class=\"btn btn-default\" (click)=\"save()\">save</button>\n        </div>\n      </div>\n        \n\n      </div>\n    </div>\n    <div class=\"col-md-3 inventory\">\n\t\t\t<stock-in-hand uri='rawstockinhand'></stock-in-hand>\n\t\t</div>\n\t</div>\n</div>\n"
 
 /***/ }),
 
@@ -135,6 +135,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FinishedMaterial", function() { return FinishedMaterial; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _services_api_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../_services/api.service */ "./src/app/_services/api.service.ts");
+/* harmony import */ var _models__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../_models */ "./src/app/_models/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -146,6 +147,8 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+//import {UtilService} from '../shared/utilservice'
+
 var FinishedMaterial = /** @class */ (function () {
     function FinishedMaterial(apiService) {
         this.apiService = apiService;
@@ -154,6 +157,9 @@ var FinishedMaterial = /** @class */ (function () {
         this.rawMaterialcfg = [];
         this.globalcfg = null;
         this.sizemap = {};
+        this.rawMaterialConsumed = [];
+        this.dataTosave = [];
+        this.flag = false;
     }
     FinishedMaterial.prototype.f = function (selectedProductType) {
         var _this = this;
@@ -164,17 +170,25 @@ var FinishedMaterial = /** @class */ (function () {
             console.log(arrayRawMaterial);
             this.rawMaterialcfg = [];
             this.activeProductType = selectedProductType;
+            this.rawMaterialConsumed = [];
             arrayRawMaterial.forEach(function (e) {
                 var d = {
                     "label": e,
                     "material": Object.keys(_this.sizemap[e])
                 };
+                _this.rawMaterialConsumed.push(new _models__WEBPACK_IMPORTED_MODULE_2__["RawMaterialImp"]('', d['material'][0], null, ''));
                 _this.rawMaterialcfg.push(d);
             });
         }
     };
+    FinishedMaterial.prototype.refresh = function () {
+        this.recdate = null;
+        this.weight = null;
+        this.dataTosave = [];
+    };
     FinishedMaterial.prototype.ngOnInit = function () {
         var _this = this;
+        this.refresh();
         this.apiService.getRawAll().subscribe(function (data) {
             _this.sizemap = data['sizemap'];
             console.log("sizemap ", _this.sizemap);
@@ -191,12 +205,27 @@ var FinishedMaterial = /** @class */ (function () {
         });
     };
     FinishedMaterial.prototype.onChange = function ($event) {
-        console.log($event);
+        this.flag = false;
         console.log(this.selectedProduct);
         this.f(this.selectedProduct.product_type);
         this.productUnit = this.selectedProduct.unit;
     };
     FinishedMaterial.prototype.add = function () {
+        console.log("recdate", this.recdate);
+        console.log(this.selectedProduct);
+        console.log(this.rawMaterialConsumed);
+        var obj = new _models__WEBPACK_IMPORTED_MODULE_2__["FinishedProductImpl"](this.recdate.day + "/" + this.recdate.month + "/" + this.recdate.year, this.selectedProduct.item_name, this.weight, this.selectedProduct.unit, this.selectedProduct.industry, this.rawMaterialConsumed);
+        console.log(obj);
+        this.dataTosave.push(obj);
+    };
+    FinishedMaterial.prototype.save = function () {
+        var _this = this;
+        console.log(this.dataTosave);
+        this.apiService.saveProducttxn(this.dataTosave).subscribe(function (e) {
+            console.log(e);
+            _this.ngOnInit();
+            _this.flag = true;
+        });
     };
     FinishedMaterial = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -220,7 +249,7 @@ var FinishedMaterial = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"contact\">\n\t<div class=\"row\">\n\t\t<div class=\"col-md-12\">\n\t\t\t<div class=\"contact-form\">\n        <div class=\"form-row\">\n          <div class=\"form-group col-md-3\">\n            \n                  <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Date</label>\n                  <div class=\"input-group\">\n                    <input class=\"form-control\" placeholder=\"yyyy-mm-dd\"\n                        name=\"dp\" [(ngModel)]=\"model\" ngbDatepicker #d=\"ngbDatepicker\">\n                     <div class=\"input-group-append\">\n                      <button class=\"btn btn-outline-secondary calendar\" (click)=\"d.toggle()\" type=\"button\"></button>\n                    </div>\n                  </div>\n                   \n          </div>\n          <div class=\"form-group col-md-3\">\n            <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Material</label>\n            <select class=\"custom-select\" id=\"id\" (change)=\"onChange($event)\" [(ngModel)] ='selectedMaterial' >\n              <option [ngValue]=\"m.key\" *ngFor=\"let m of materialmap |keyvalue\">{{m.value}}</option>\n            </select>\n           </div>\n        \n        <div class=\"form-group col-md-3\">\n          <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Size</label>\n          <select class=\"custom-select\" id=\"id\" [(ngModel)]=\"selectedsize\">\n            <option [value]=\"m.key\" *ngFor=\"let m of sizemap |keyvalue\">{{m.value}}</option>\n          </select>\n         </div>\n         <div class=\"form-group col-md-3\">\n          <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Weight</label>\n          <input class=\"form-control\" type=\"text\" [(ngModel)]='weight'\n          [value]=\"weight\">\n         </div>\n        </div>\n        <div class=\"form-group \" >    \n\t\t\t\t  <div class=\"col-sm-offset-4 col-sm-4\" style=\"left:50%;\">\n\t\t\t\t  \t<button type=\"submit\" class=\"btn btn-default center-block \" (click)=\"add()\">add</button>\n\t\t\t\t  </div>\n\t\t\t\t</div>\n      </div>\n    </div>\n  </div>\n  <div class=\"row\">\n    <table class=\"table table-striped table-bordered table-hover\" >\n      <thead class=\"thead-dark\">\n        <tr>\n          <th scope=\"col\">#</th>\n          <th scope=\"col\">Date</th>\n          <th scope=\"col\">material</th>\n          <th scope=\"col\">Weight(Kg.)/Nos</th>\n          <th scope=\"col\"></th>\n          <th scope=\"col\"></th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let rawTxn of dataTosave;let indexOfelement=index;\">\n          <th scope=\"row\">{{indexOfelement}}</th>\n          <td>{{rawTxn.date}}</td>\n          <td>{{rawTxn.material}}</td>\n          <td>{{rawTxn.weight}}</td>\n          <th scope=\"col\" (click)=\"edit(indexOfelement)\">edit</th>\n          <th scope=\"col\" (click)=\"delete(indexOfelement)\">delete</th>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n\n\n"
+module.exports = "<div class=\"contact\">\n  <div class=\"alert alert-success\" role=\"alert\" *ngIf=\"flag\">\n    Data saved successfully.\n  </div>\n\t<div class=\"row\">\n\t\t<div class=\"col-md-12\">\n\t\t\t<div class=\"contact-form\">\n        <div class=\"form-row\">\n          <div class=\"form-group col-md-3\">\n            \n                  <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Date</label>\n                  <div class=\"input-group\">\n                    <input class=\"form-control\" \n                        name=\"dp\" [(ngModel)]=\"recdate\" ngbDatepicker #d=\"ngbDatepicker\" value=\"recdate\">\n                     <div class=\"input-group-append\">\n                      <button class=\"btn btn-outline-secondary calendar\" (click)=\"d.toggle()\" type=\"button\"></button>\n                    </div>\n                  </div>\n                   \n          </div>\n          <div class=\"form-group col-md-3\">\n            <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Material</label>\n            <select class=\"custom-select\" id=\"id\" (change)=\"onChange($event)\" [(ngModel)] ='selectedMaterial' >\n              <option [ngValue]=\"m.key\" *ngFor=\"let m of materialmap |keyvalue\">{{m.value}}</option>\n            </select>\n           </div>\n        \n        <div class=\"form-group col-md-3\">\n          <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Size</label>\n          <select class=\"custom-select\" id=\"id\" [(ngModel)]=\"selectedsize\">\n            <option [value]=\"m.key\" *ngFor=\"let m of sizemap |keyvalue\">{{m.value}}</option>\n          </select>\n         </div>\n         <div class=\"form-group col-md-3\">\n          <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Weight</label>\n          <input class=\"form-control\" type=\"text\" [(ngModel)]='weight'\n          [value]=\"weight\" required>\n         </div>\n        </div>\n        <div class=\"form-group \" >    \n\t\t\t\t  <div class=\"col-sm-offset-4 col-sm-4\" style=\"left:50%;\">\n\t\t\t\t  \t<button type=\"submit\" class=\"btn btn-default center-block \" (click)=\"add()\">add</button>\n\t\t\t\t  </div>\n\t\t\t\t</div>\n     \n  <div class=\"row\" *ngIf=\"dataTosave?.length > 0\">\n    <table class=\"table table-striped table-bordered table-hover\" >\n      <thead class=\"thead-dark\">\n        <tr>\n          <th scope=\"col\">#</th>\n          <th scope=\"col\">Date</th>\n          <th scope=\"col\">material</th>\n          <th scope=\"col\">Weight(Kg.)/Nos</th>\n          <th scope=\"col\"></th>\n          <th scope=\"col\"></th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let rawTxn of dataTosave;let indexOfelement=index;\">\n          <th scope=\"row\">{{indexOfelement+1}}</th>\n          <td>{{rawTxn.date}}</td>\n          <td>{{rawTxn.material}}</td>\n          <td>{{rawTxn.weight}}</td>\n          <th scope=\"col\" (click)=\"edit(indexOfelement)\">edit</th>\n          <th scope=\"col\" (click)=\"delete(indexOfelement)\">delete</th>\n        </tr>\n      </tbody>\n    </table>\n   \n  </div>\n  <div class=\"form-group \" *ngIf=\"dataTosave?.length > 0\">    \n    <div class=\"col-sm-offset-4 col-sm-4\" style=\"left:50%;\">\n      <button type=\"submit\" class=\"btn btn-default center-block \" (click)=\"save()\">save</button>\n    </div>\n  </div>\n</div>\n</div>\n</div>\n</div>\n\n"
 
 /***/ }),
 
@@ -256,9 +285,16 @@ var RawMaterial = /** @class */ (function () {
         this.uri = 'finishedproduct';
         this.apiresult = null;
         this.dataTosave = [];
+        this.flag = false;
     }
+    RawMaterial.prototype.refresh = function () {
+        this.recdate = null;
+        this.weight = null;
+        this.dataTosave = [];
+    };
     RawMaterial.prototype.ngOnInit = function () {
         var _this = this;
+        this.refresh();
         this.apiService.getRawAll().subscribe(function (data) {
             console.log(data);
             _this.materialmap = data['material'];
@@ -271,6 +307,7 @@ var RawMaterial = /** @class */ (function () {
         });
     };
     RawMaterial.prototype.onChange = function ($event) {
+        this.flag = false;
         console.log($event);
         console.log(this.selectedMaterial);
         this.sizemap = this.rawItemCfg[this.selectedMaterial];
@@ -278,7 +315,8 @@ var RawMaterial = /** @class */ (function () {
     RawMaterial.prototype.add = function () {
         console.log(this.selectedsize);
         console.log(this.weight);
-        var obj = new _models__WEBPACK_IMPORTED_MODULE_2__["RawMaterialImp"]('2/2/2', this.selectedsize, this.weight, 'industry1');
+        console.log(this.recdate);
+        var obj = new _models__WEBPACK_IMPORTED_MODULE_2__["RawMaterialImp"](this.recdate.day + "/" + this.recdate.month + "/" + this.recdate.year, this.selectedsize, this.weight, 'industry1');
         console.log(obj);
         this.dataTosave.push(obj);
     };
@@ -289,6 +327,15 @@ var RawMaterial = /** @class */ (function () {
         console.log("delete", indexOfelement);
         this.dataTosave.splice(indexOfelement, 1);
     };
+    RawMaterial.prototype.save = function () {
+        var _this = this;
+        console.log(this.dataTosave);
+        this.apiService.saveRaw(this.dataTosave).subscribe(function (e) {
+            console.log(e);
+            _this.ngOnInit();
+            _this.flag = true;
+        });
+    };
     RawMaterial = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'rawitem',
@@ -298,6 +345,157 @@ var RawMaterial = /** @class */ (function () {
         __metadata("design:paramtypes", [_services_api_service__WEBPACK_IMPORTED_MODULE_1__["ApiService"]])
     ], RawMaterial);
     return RawMaterial;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/_entry/sales.html":
+/*!***********************************!*\
+  !*** ./src/app/_entry/sales.html ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"contact\">\n    <div class=\"alert alert-success\" role=\"alert\" *ngIf=\"flag\">\n        Data saved successfully.\n      </div>\n\t<div class=\"row\">\n\t\t<div class=\"col-md-9\">\n            <div class=\"contact-form\">\n            <div class=\"form-row\">\n                <div class=\"form-group col-md-3\">\n                  \n                        <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Date</label>\n                        <div class=\"input-group\">\n                          <input class=\"form-control\" \n                              name=\"dp\" [(ngModel)]=\"recdate\" ngbDatepicker #d=\"ngbDatepicker\" value=\"recdate\">\n                           <div class=\"input-group-append\">\n                            <button class=\"btn btn-outline-secondary calendar\" (click)=\"d.toggle()\" type=\"button\"></button>\n                          </div>\n                        </div>\n                         \n                </div>\n                <div class=\"form-group col-md-3\">\n                  <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Product</label>\n                  <select class=\"form-control\" [(ngModel)]=\"selectedProduct\" (change)=\"onChange()\"  required>\n                    <option  [ngValue]=\"m\" *ngFor=\"let m of finishmaterialcfg \">{{m.item_name}}</option>\n                  </select>\n                 </div>\n               <div class=\"form-group col-md-3\">\n                <label for=\"inputEmail4\" class=\"col-sm-2 col-form-label\">Weight/Nos</label>\n                <input class=\"form-control\" type=\"text\" [(ngModel)]='value'\n                [value]=\"value\" required>\n               </div>\n              </div>\n              <div class=\"form-group \" >    \n                        <div class=\"col-sm-offset-4 col-sm-4\" style=\"left:50%;\">\n                            <button type=\"submit\" class=\"btn btn-default center-block \" (click)=\"add()\">add</button>\n                        </div>\n             </div>\n    <div class=\"row\" *ngIf=\"saveData?.length > 0\">\n      <table class=\"table table-striped table-bordered table-hover\" >\n        <thead class=\"thead-dark\">\n          <tr>\n              <th scope =\"col\" >#</th>\n              <th scope=\"col\">Date</th>\n              <th scope=\"col\">Product</th>\n              <th scope=\"col\">Weight</th>\n              <th scope=\"col\"></th>\n              <th scope=\"col\"></th>\n          </tr>\n      </thead>\n       \n        <tbody>\n          <tr *ngFor=\"let txn of saveData;let indexOfelement=index;\">\n            <th scope=\"row\">{{indexOfelement+1}}</th>\n            <td>{{txn.date}}</td>\n            <td>{{txn.product}}</td>\n            <td>{{txn.value}} {{txn.unit}}</td>\n            <td>Edit</td>\n            <td>Delete</td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n      <div class=\"form-group \" *ngIf=\"saveData?.length > 0\">    \n        <div class=\"col-sm-offset-4 col-sm-*\" style=\"left:50%;\">\n          <button type=\"submit\" class=\"btn btn-default center-block \" (click)=\"save()\">save</button>\n        </div>\n      </div>\n    </div>\n        </div>\n        <div class=\"col-md-3 inventory\">\n            <stock-in-hand uri='finishprodinhand'></stock-in-hand>\n\t    </div>\n\t</div>\n</div>\n"
+
+/***/ }),
+
+/***/ "./src/app/_entry/sales.ts":
+/*!*********************************!*\
+  !*** ./src/app/_entry/sales.ts ***!
+  \*********************************/
+/*! exports provided: SalesCompoent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SalesCompoent", function() { return SalesCompoent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _services_api_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../_services/api.service */ "./src/app/_services/api.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var SalesCompoent = /** @class */ (function () {
+    function SalesCompoent(apiService) {
+        this.apiService = apiService;
+        this.saveData = [];
+        this.flag = false;
+    }
+    SalesCompoent.prototype.refresh = function () {
+        this.recdate = null;
+        this.value = null;
+        this.saveData = [];
+    };
+    SalesCompoent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.refresh();
+        this.apiService.getFinishedCfgAll().subscribe(function (resp) {
+            console.log(resp);
+            _this.finishmaterialcfg = resp['data'];
+            _this.selectedProduct = _this.finishmaterialcfg[0];
+        });
+    };
+    SalesCompoent.prototype.add = function () {
+        var sale = { date: this.recdate.day + "/" + this.recdate.month + "/" + this.recdate.year,
+            product: this.selectedProduct.item_name,
+            value: this.value,
+            unit: this.selectedProduct.unit,
+            industry: this.selectedProduct.industry };
+        this.saveData.push(sale);
+    };
+    SalesCompoent.prototype.save = function () {
+        var _this = this;
+        console.log(this.saveData);
+        this.apiService.saveSales(this.saveData).subscribe(function (e) {
+            console.log(e);
+            _this.ngOnInit();
+            _this.flag = true;
+        });
+    };
+    SalesCompoent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'sales',
+            template: __webpack_require__(/*! ./sales.html */ "./src/app/_entry/sales.html"),
+            styles: [__webpack_require__(/*! ./common.css */ "./src/app/_entry/common.css")]
+        }),
+        __metadata("design:paramtypes", [_services_api_service__WEBPACK_IMPORTED_MODULE_1__["ApiService"]])
+    ], SalesCompoent);
+    return SalesCompoent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/_entry/sidepanel_sih.html":
+/*!*******************************************!*\
+  !*** ./src/app/_entry/sidepanel_sih.html ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"contact-info\">\n    <ul class=\"section-nav nav flex-column flex-nowrap overflow-hidden\">\n       <li class=\"list nav-item\" *ngFor=\"let stockdetail of stockInHandMap | keyvalue\" >\n            <div class=\"dropdown\">\n                <i class=\"fa fa-list\" aria-hidden=\"true\"></i>{{stockdetail.key}}<i class=\"fa fa-plus pull-right\" aria-hidden=\"true\"></i>\n            </div>\n            <ul class=\"submenu hide\">\n                <li *ngFor=\"let stock of stockdetail.value\"><i class=\"fa fa-bookmark-o\" aria-hidden=\"true\" ></i> {{stock.code}} <span class=\"activebooks pull-right\">{{stock.stock}}</span></li>\n            </ul>\n        </li>\n    </ul>\n        \n\n</div>"
+
+/***/ }),
+
+/***/ "./src/app/_entry/sidepanel_sih.ts":
+/*!*****************************************!*\
+  !*** ./src/app/_entry/sidepanel_sih.ts ***!
+  \*****************************************/
+/*! exports provided: SidePanelSIH */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SidePanelSIH", function() { return SidePanelSIH; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _services_api_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../_services/api.service */ "./src/app/_services/api.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var SidePanelSIH = /** @class */ (function () {
+    function SidePanelSIH(apiService) {
+        this.apiService = apiService;
+        this.uri = '';
+    }
+    SidePanelSIH.prototype.ngOnInit = function () {
+        var _this = this;
+        this.apiService.get_stock_in_hand(this.uri).subscribe(function (resp) {
+            console.log(resp);
+            _this.stockInHandMap = resp;
+        });
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], SidePanelSIH.prototype, "uri", void 0);
+    SidePanelSIH = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'stock-in-hand',
+            template: __webpack_require__(/*! ./sidepanel_sih.html */ "./src/app/_entry/sidepanel_sih.html"),
+            styles: [__webpack_require__(/*! ./common.css */ "./src/app/_entry/common.css")]
+        }),
+        __metadata("design:paramtypes", [_services_api_service__WEBPACK_IMPORTED_MODULE_1__["ApiService"]])
+    ], SidePanelSIH);
+    return SidePanelSIH;
 }());
 
 
@@ -620,8 +818,10 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var JwtInterceptor = /** @class */ (function () {
     function JwtInterceptor() {
     }
+    JwtInterceptor_1 = JwtInterceptor;
     JwtInterceptor.prototype.intercept = function (request, next) {
         // add authorization header with jwt token if available
+        console.log("JwtInterceptor", JwtInterceptor_1);
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (currentUser && currentUser.token) {
             request = request.clone({
@@ -629,13 +829,15 @@ var JwtInterceptor = /** @class */ (function () {
                     Authorization: "Bearer " + currentUser.token
                 }
             });
+            console.log(request);
         }
         return next.handle(request);
     };
-    JwtInterceptor = __decorate([
+    JwtInterceptor = JwtInterceptor_1 = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])()
     ], JwtInterceptor);
     return JwtInterceptor;
+    var JwtInterceptor_1;
 }());
 
 
@@ -710,13 +912,14 @@ var RawMaterialImp = /** @class */ (function () {
 }());
 
 var FinishedProductImpl = /** @class */ (function () {
-    function FinishedProductImpl(date, product, weight, industry, material, rawmaterial_weight) {
+    function FinishedProductImpl(date, product, value, unit, industry, listRawMaterialConsumed) {
         this.rawMaterialList = [];
         this.date = date;
         this.product = product;
         this.industry = industry;
-        this.weight = weight;
-        this.rawMaterialList.push(new RawMaterialImp(date, material, rawmaterial_weight, industry));
+        this.value = value;
+        this.unit = unit;
+        this.rawMaterialList = listRawMaterialConsumed;
     }
     return FinishedProductImpl;
 }());
@@ -859,6 +1062,23 @@ var ApiService = /** @class */ (function () {
         var baseruri = _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].origin + _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].api;
         return this.http.get(baseruri + "/finishedproduct");
     };
+    ApiService.prototype.saveRaw = function (data) {
+        var baseruri = _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].origin + _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].api;
+        return this.http.post(baseruri + "/rawproduct", data);
+    };
+    ApiService.prototype.saveProducttxn = function (data) {
+        var baseruri = _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].origin + _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].api;
+        return this.http.post(baseruri + "/finishedproduct", data);
+    };
+    ApiService.prototype.get_stock_in_hand = function (url) {
+        console.log("uri", url);
+        var baseruri = _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].origin + _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].api;
+        return this.http.get(baseruri + "/" + url);
+    };
+    ApiService.prototype.saveSales = function (data) {
+        var baseruri = _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].origin + _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].api;
+        return this.http.post(baseruri + "/isales", data);
+    };
     ApiService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
         __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"]])
@@ -884,6 +1104,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../environments/environment */ "./src/environments/environment.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -893,6 +1114,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -912,10 +1134,14 @@ var AuthenticationService = /** @class */ (function () {
     AuthenticationService.prototype.login = function (username, password) {
         var _this = this;
         //let baseuri = environment.origin+environment.api
-        var baseuri = "http://localhost:4000";
+        //let baseuri = "http://localhost:4000"
+        console.log("login");
+        var baseuri = _environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].origin + _environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].api;
+        console.log(baseuri);
         return this.http.post(baseuri + "/users/authenticate", { username: username, password: password })
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["map"])(function (user) {
             // login successful if there's a jwt token in the response
+            console.log("user ", user);
             if (user && user.token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('currentUser', JSON.stringify(user));
@@ -1079,11 +1305,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_helpers */ "./src/app/_helpers/index.ts");
-/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
-/* harmony import */ var _app_routing__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./app.routing */ "./src/app/app.routing.ts");
-/* harmony import */ var _directives__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./_directives */ "./src/app/_directives/index.ts");
-/* harmony import */ var _guards__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./_guards */ "./src/app/_guards/index.ts");
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
+/* harmony import */ var _app_routing__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./app.routing */ "./src/app/app.routing.ts");
+/* harmony import */ var _directives__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./_directives */ "./src/app/_directives/index.ts");
+/* harmony import */ var _guards__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./_guards */ "./src/app/_guards/index.ts");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./_helpers */ "./src/app/_helpers/index.ts");
 /* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./_services */ "./src/app/_services/index.ts");
 /* harmony import */ var _services_api_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./_services/api.service */ "./src/app/_services/api.service.ts");
 /* harmony import */ var _home__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./home */ "./src/app/home/index.ts");
@@ -1091,8 +1317,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _register__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./register */ "./src/app/register/index.ts");
 /* harmony import */ var _entry_raw_material__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./_entry/raw_material */ "./src/app/_entry/raw_material.ts");
 /* harmony import */ var _entry_finished_material__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./_entry/finished_material */ "./src/app/_entry/finished_material.ts");
-/* harmony import */ var _header_header_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./header/header.component */ "./src/app/header/header.component.ts");
-/* harmony import */ var _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @ng-bootstrap/ng-bootstrap */ "./node_modules/@ng-bootstrap/ng-bootstrap/fesm5/ng-bootstrap.js");
+/* harmony import */ var _entry_sidepanel_sih__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./_entry/sidepanel_sih */ "./src/app/_entry/sidepanel_sih.ts");
+/* harmony import */ var _entry_sales__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./_entry/sales */ "./src/app/_entry/sales.ts");
+/* harmony import */ var _header_header_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./header/header.component */ "./src/app/header/header.component.ts");
+/* harmony import */ var _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @ng-bootstrap/ng-bootstrap */ "./node_modules/@ng-bootstrap/ng-bootstrap/fesm5/ng-bootstrap.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1104,7 +1332,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
-// used to create fake backend
+
 
 
 
@@ -1127,34 +1355,34 @@ var AppModule = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"])({
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
-                _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_17__["NgbModule"],
+                _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_19__["NgbModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormsModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_2__["ReactiveFormsModule"],
                 _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HttpClientModule"],
-                _app_routing__WEBPACK_IMPORTED_MODULE_6__["routing"]
+                _app_routing__WEBPACK_IMPORTED_MODULE_5__["routing"]
             ],
             declarations: [
-                _app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"],
-                _directives__WEBPACK_IMPORTED_MODULE_7__["AlertComponent"],
+                _app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"],
+                _directives__WEBPACK_IMPORTED_MODULE_6__["AlertComponent"],
                 _home__WEBPACK_IMPORTED_MODULE_11__["HomeComponent"],
                 _login__WEBPACK_IMPORTED_MODULE_12__["LoginComponent"],
                 _register__WEBPACK_IMPORTED_MODULE_13__["RegisterComponent"],
                 _entry_raw_material__WEBPACK_IMPORTED_MODULE_14__["RawMaterial"],
                 _entry_finished_material__WEBPACK_IMPORTED_MODULE_15__["FinishedMaterial"],
-                _header_header_component__WEBPACK_IMPORTED_MODULE_16__["HeaderComponent"]
+                _header_header_component__WEBPACK_IMPORTED_MODULE_18__["HeaderComponent"],
+                _entry_sidepanel_sih__WEBPACK_IMPORTED_MODULE_16__["SidePanelSIH"],
+                _entry_sales__WEBPACK_IMPORTED_MODULE_17__["SalesCompoent"]
             ],
             providers: [
-                _guards__WEBPACK_IMPORTED_MODULE_8__["AuthGuard"],
+                _guards__WEBPACK_IMPORTED_MODULE_7__["AuthGuard"],
                 _services__WEBPACK_IMPORTED_MODULE_9__["AlertService"],
                 _services__WEBPACK_IMPORTED_MODULE_9__["AuthenticationService"],
                 _services__WEBPACK_IMPORTED_MODULE_9__["UserService"],
                 _services_api_service__WEBPACK_IMPORTED_MODULE_10__["ApiService"],
-                { provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HTTP_INTERCEPTORS"], useClass: _helpers__WEBPACK_IMPORTED_MODULE_4__["JwtInterceptor"], multi: true },
-                { provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HTTP_INTERCEPTORS"], useClass: _helpers__WEBPACK_IMPORTED_MODULE_4__["ErrorInterceptor"], multi: true },
-                // provider used to create fake backend
-                _helpers__WEBPACK_IMPORTED_MODULE_4__["fakeBackendProvider"]
+                { provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HTTP_INTERCEPTORS"], useClass: _helpers__WEBPACK_IMPORTED_MODULE_8__["JwtInterceptor"], multi: true },
+                { provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HTTP_INTERCEPTORS"], useClass: _helpers__WEBPACK_IMPORTED_MODULE_8__["ErrorInterceptor"], multi: true },
             ],
-            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"]]
+            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"]]
         })
     ], AppModule);
     return AppModule;
@@ -1175,12 +1403,12 @@ var AppModule = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "routing", function() { return routing; });
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
-/* harmony import */ var _home__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./home */ "./src/app/home/index.ts");
-/* harmony import */ var _login__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./login */ "./src/app/login/index.ts");
-/* harmony import */ var _register__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./register */ "./src/app/register/index.ts");
-/* harmony import */ var _guards__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_guards */ "./src/app/_guards/index.ts");
-/* harmony import */ var _entry_raw_material__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./_entry/raw_material */ "./src/app/_entry/raw_material.ts");
-/* harmony import */ var _entry_finished_material__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./_entry/finished_material */ "./src/app/_entry/finished_material.ts");
+/* harmony import */ var _login__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./login */ "./src/app/login/index.ts");
+/* harmony import */ var _register__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./register */ "./src/app/register/index.ts");
+/* harmony import */ var _guards__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./_guards */ "./src/app/_guards/index.ts");
+/* harmony import */ var _entry_raw_material__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_entry/raw_material */ "./src/app/_entry/raw_material.ts");
+/* harmony import */ var _entry_finished_material__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./_entry/finished_material */ "./src/app/_entry/finished_material.ts");
+/* harmony import */ var _entry_sales__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./_entry/sales */ "./src/app/_entry/sales.ts");
 
 
 
@@ -1189,11 +1417,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var appRoutes = [
-    { path: '', component: _home__WEBPACK_IMPORTED_MODULE_1__["HomeComponent"], canActivate: [_guards__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]] },
-    { path: 'login', component: _login__WEBPACK_IMPORTED_MODULE_2__["LoginComponent"] },
-    { path: 'register', component: _register__WEBPACK_IMPORTED_MODULE_3__["RegisterComponent"] },
-    { path: 'raw', component: _entry_raw_material__WEBPACK_IMPORTED_MODULE_5__["RawMaterial"] },
-    { path: 'finished', component: _entry_finished_material__WEBPACK_IMPORTED_MODULE_6__["FinishedMaterial"] },
+    { path: '', redirectTo: '/raw', canActivate: [_guards__WEBPACK_IMPORTED_MODULE_3__["AuthGuard"]], pathMatch: 'full' },
+    { path: 'login', component: _login__WEBPACK_IMPORTED_MODULE_1__["LoginComponent"] },
+    { path: 'register', component: _register__WEBPACK_IMPORTED_MODULE_2__["RegisterComponent"] },
+    { path: 'raw', component: _entry_raw_material__WEBPACK_IMPORTED_MODULE_4__["RawMaterial"] },
+    { path: 'finished', component: _entry_finished_material__WEBPACK_IMPORTED_MODULE_5__["FinishedMaterial"] },
+    { path: 'sales', component: _entry_sales__WEBPACK_IMPORTED_MODULE_6__["SalesCompoent"] },
     // otherwise redirect to home
     { path: '**', redirectTo: '' }
 ];
@@ -1209,7 +1438,7 @@ var routing = _angular_router__WEBPACK_IMPORTED_MODULE_0__["RouterModule"].forRo
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<header class=\"navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar\">\n    <div class=\"navbar-nav-scroll\">\n        <ul class=\"navbar-nav bd-navbar-nav flex-row\">\n            <li class=\"nav-item\">\n                <a routerLink=\"raw\" class=\"nav-link\">RAW MATERIAL</a>\n            </li>\n            <li class=\"nav-item\">\n                <a routerLink=\"finished\" class=\"nav-link\">FINISHED PRODUCT</a>\n            </li>\n            <li class=\"nav-item\">\n                <a routerLink=\"raw\" class=\"nav-link\">SALES</a>\n            </li>\n            <li class=\"nav-item\">\n                <a routerLink=\"finished\" class=\"nav-link\">REPORT</a>\n            </li>\n        </ul>\n    </div>\n</header>"
+module.exports = "<header class=\"navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar\" *ngIf=\"isLoggedIn$ | async\">\n    <div class=\"navbar-nav-scroll\">\n        <ul class=\"navbar-nav bd-navbar-nav flex-row\">\n            <li class=\"nav-item\">\n                <a routerLink=\"raw\" class=\"nav-link\">RAW MATERIAL</a>\n            </li>\n            <li class=\"nav-item\">\n                <a routerLink=\"finished\" class=\"nav-link\">FINISHED PRODUCT</a>\n            </li>\n            <li class=\"nav-item\">\n                <a routerLink=\"sales\" class=\"nav-link\">SALES</a>\n            </li>\n            <li class=\"nav-item\">\n                <a routerLink=\"finished\" class=\"nav-link\">REPORT</a>\n            </li>\n            <li class=\"nav-item\">\n                <a routerLink=\"finished\" class=\"nav-link\">REPORT</a>\n            </li>\n        </ul>\n    </div>\n</header>"
 
 /***/ }),
 
@@ -1241,6 +1470,8 @@ var HeaderComponent = /** @class */ (function () {
         this.authService = authService;
     }
     HeaderComponent.prototype.ngOnInit = function () {
+        console.log("this.isLoggedIn$", this.isLoggedIn$);
+        console.log(this.authService.isLoggedIn);
         this.isLoggedIn$ = this.authService.isLoggedIn;
     };
     HeaderComponent.prototype.onLogout = function () {
@@ -1458,6 +1689,7 @@ var LoginComponent = /** @class */ (function () {
         if (this.loginForm.invalid) {
             return;
         }
+        console.log("Onsubmit");
         this.loading = true;
         this.authenticationService.login(this.f.username.value, this.f.password.value)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])())

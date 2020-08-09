@@ -6,9 +6,9 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import NullPool
 
 from app.resources import RegisterAPI
-from app.models import Base
+from app.models import TXNBase,ConfigBase
 class DbConnectionManager:
-    def __init__(self, db):
+    def __init__(self, db,Base):
         try:
             schema = db.get("schema",None)
             #print(schema)
@@ -49,7 +49,7 @@ class DbConnectionManager:
 
 class Application():
     @staticmethod
-    def init(static, dbpath):
+    def init(static, dbpath,txndb):
         print(dbpath)
         db_type = 'sqlite'
         db_info = {'drivername': db_type, 'database': dbpath}
@@ -57,12 +57,16 @@ class Application():
         dburl = URL(**db_info)
         print(dburl)
         db = {'connectionPath':dburl,"schema":None}
-        configdb_conn = DbConnectionManager(db)
+        configdb_conn = DbConnectionManager(db,ConfigBase)
         application = Flask(__name__)
         application.template_folder=static
         application.static_folder=static
         application.config['configdb']=configdb_conn
-        application.config['txndb'] = ''
+        txn_db = {'drivername':db_type,'database':txndb}
+        txn_dburl = URL(**txn_db)
+        db = {'connectionPath':txn_dburl,"schema":None}
+        txngdb_conn = DbConnectionManager(db,TXNBase)
+        application.config['txndb'] =txngdb_conn
         @application.route('/<path:path>')
         def send_js(path):
             #print(app.static_folder)
