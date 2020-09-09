@@ -4,4 +4,3 @@ requests
 sqlalchemy
 PyJWT
 pytz
-dotenv
