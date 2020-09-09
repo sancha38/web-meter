@@ -1,8 +1,7 @@
 
 import os
 import sys
-from dotenv import load_dotenv
-load_dotenv() 
+
 from app.main import Application
 basepath  = os.getcwd()
 print(basepath)
