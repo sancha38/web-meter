@@ -5,3 +5,4 @@ psycopg2
 sqlalchemy
 PyJWT
 pytz
+simplejson==3.13.2
