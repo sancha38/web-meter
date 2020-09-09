@@ -102,6 +102,7 @@ class RAW_STOCK_IN_HAND(TXNBase):
         return {"data":data,"recordsTotal":len(data),"recordsFiltered":len(data)}
     
     def toJson(self):
+        print("available_weight type ",type(self.available_weight))
         return {
             "id": self.id,
             "material" : self.material_name,

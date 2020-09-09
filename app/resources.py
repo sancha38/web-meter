@@ -478,6 +478,7 @@ class RegisterAPI:
             if id == '1':
                 print("entered")
                 listd = RAW_STOCK_IN_HAND.get_raw_stock_in_hand(sesion,headerPayload['industry'])
+                print("listd type ",listd)
             elif id =='2':
                 listd = SEMI_PRODUCT_IN_HAND.get_stock_in_hand(sesion,headerPayload['industry'])
             elif id =='3':
