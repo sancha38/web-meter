@@ -7773,7 +7773,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     var environment = {
       production: false,
       apiUrl: 'http://localhost:4000',
-      origin: 'http://' + document.domain + '/v1/',
+      origin: 'https://' + document.domain + '/v1/',
       api: 'api',
       envName: 'dev'
     };

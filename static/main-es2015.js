@@ -4028,7 +4028,7 @@ __webpack_require__.r(__webpack_exports__);
 const environment = {
     production: false,
     apiUrl: 'http://localhost:4000',
-    origin: 'http://' + document.domain + '/v1/',
+    origin: 'https://' + document.domain + '/v1/',
     api: 'api',
     envName: 'dev',
 };
