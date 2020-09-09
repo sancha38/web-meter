@@ -1,23 +1,22 @@
 from sqlalchemy.engine.url import URL
-
+import os
 from flask import Flask,redirect,session,request,send_from_directory,render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import NullPool
 
 from app.resources import RegisterAPI
-from app.models import TXNBase,ConfigBase
+from app.models import TXNBase
 class DbConnectionManager:
-    def __init__(self, db,Base):
+    def __init__(self, db,url,Base):
         try:
-            schema = db.get("schema",None)
-            #print(schema)
-            if schema is None:
+            print(db.SCHEMA )
+            if db.SCHEMA is None:
                 #print("1")
-                self.engine = create_engine(db.get('connectionPath'), poolclass=NullPool)
+                self.engine = create_engine(url, poolclass=NullPool)
             else:
                 #print("2")
-                self.engine = create_engine(db.get('connectionPath'), poolclass=NullPool,connect_args={'options': '-csearch_path={}'.format(schema)})
+                self.engine = create_engine(url, poolclass=NullPool,connect_args={'options': '-csearch_path={}'.format(db.SCHEMA)})
             self.engine.dialect.supports_sane_rowcount = self.engine.dialect.supports_sane_multi_rowcount = False
             db_session = scoped_session(sessionmaker(
                     autocommit=False,
@@ -46,27 +45,40 @@ class DbConnectionManager:
             # print "Session Closed"
         except Exception as e:
             print('Error:', e)
-
-class Application():
+            
+class Database():
+        def __init__(self):
+                self.DB_HOST =  os.getenv("DB_HOST")
+                self.DB_PASSWORD = os.getenv("DB_PASSWORD")
+                self.DB_USER = os.getenv("DB_USER")
+                self.DB_PORT = os.getenv("DB_PORT")
+                self.DB = os.getenv("DB")
+                self.SCHEMA = os.getenv("SCHEMA")
+        
+        def getURL(self,driver_name):
+                db_info = {'drivername': driver_name,
+                        'username': self.DB_USER,
+                        'password': self.DB_PASSWORD,
+                        'host': self.DB_HOST ,
+                        'port': self.DB_PORT,
+                        'database':self.DB}
+                return  URL(**db_info)
+        
+class Application():   
     @staticmethod
-    def init(static, dbpath,txndb):
-        print(dbpath)
-        db_type = 'sqlite'
-        db_info = {'drivername': db_type, 'database': dbpath}
-        print(db_info)
-        dburl = URL(**db_info)
-        print(dburl)
-        db = {'connectionPath':dburl,"schema":None}
-        configdb_conn = DbConnectionManager(db,ConfigBase)
+    def init(static):
+      
+        db = Database()
+        dburl = db.getURL('postgresql') 
+        print(dburl)       
+        db_conn = DbConnectionManager(db,dburl,TXNBase)
+        print(db_conn)
+        
         application = Flask(__name__)
         application.template_folder=static
         application.static_folder=static
-        application.config['configdb']=configdb_conn
-        txn_db = {'drivername':db_type,'database':txndb}
-        txn_dburl = URL(**txn_db)
-        db = {'connectionPath':txn_dburl,"schema":None}
-        txngdb_conn = DbConnectionManager(db,TXNBase)
-        application.config['txndb'] =txngdb_conn
+        application.config['txndb']=db_conn
+        
         @application.route('/<path:path>')
         def send_js(path):
             #print(app.static_folder)
