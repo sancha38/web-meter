@@ -153,7 +153,7 @@ class RAW_MATERIAL_TXN(TXNBase):
     
     @classmethod
     def insert_raw_txn(cls,session,json,industry,txn_type,consumed_by=None):
-        print("insert_raw_txn")
+       
         obj = RAW_MATERIAL_TXN()
         obj = cls.setObj(obj,json,industry,txn_type)
         if consumed_by:

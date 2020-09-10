@@ -67,7 +67,7 @@ class RegisterAPI:
             headerPayload = self.getRequest_header()
             print(challanId)
             listd = RAW_MATERIAL_TXN.get_txn_raw_by_challan_no(sesion,challanId,headerPayload['industry'])
-            print(listd)
+            
             code =200
         except Exception as e:
             print(e)
@@ -111,7 +111,6 @@ class RegisterAPI:
             else:
                 body = { "error": { "message": 'Username or password is incorrect' } }
                 code = 400
-            print("body ",body)
         except NoResultFound:
             body = { "error": { "message": 'Username or password is incorrect' } }
             code = 400
@@ -130,7 +129,6 @@ class RegisterAPI:
 
     def save_sales(self):
         try:
-            print("save_sales")
             sesion = self.txndb.getSession()
             params = self.get_params()
 
@@ -142,9 +140,6 @@ class RegisterAPI:
                 query = sesion.query(Table_manager).filter_by(table_name= "sales_tb",industry_type = headerPayload['industry'])
                 print(query)
                 result = query.one()
-                print(result.table_name)
-                print(result.industry_type)
-                print(result.generated_id)
                 result.generated_id = result.generated_id + 1
                 sesion.add(result)
                 
@@ -289,9 +284,6 @@ class RegisterAPI:
                 query = sesion.query(Table_manager).filter_by(table_name= SEMI_PRODUCT_IN_HAND.__tablename__,industry_type = headerPayload['industry'])
                 
                 result = query.one()
-                print(result.table_name)
-                print(result.industry_type)
-                print(result.generated_id)
                 result.generated_id = result.generated_id + 1
                 sesion.add(result)
                 
@@ -348,7 +340,6 @@ class RegisterAPI:
                 "product":list(size_map.keys()),
                 "sizes":size_map
             }
-            print(listd)
             code =200
         except Exception as e:
             #print(e)
@@ -364,9 +355,9 @@ class RegisterAPI:
             sesion = self.txndb.getSession()
             headerPayload = self.getRequest_header()
             params = self.get_params()
-            print(params)
+            
             listd = IN2_PROD_STOCK_IN_HAND.get_mapped_raw_semi(sesion,params['product'],params['size'],headerPayload['industry'])
-            print(listd)
+            
             code =200
         except Exception as e:
             #print(e)
@@ -383,7 +374,7 @@ class RegisterAPI:
             params = self.get_params()
 
             headerPayload = self.getRequest_header()
-            print(params)
+           
             record_status = params['status']
             
             if record_status == 'new':
