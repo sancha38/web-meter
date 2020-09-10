@@ -102,7 +102,6 @@ class RAW_STOCK_IN_HAND(TXNBase):
         return {"data":data,"recordsTotal":len(data),"recordsFiltered":len(data)}
     
     def toJson(self):
-        print("available_weight type -",type(self.available_weight))
         return {
             "id": self.id,
             "material" : self.material_name,
@@ -130,20 +129,13 @@ class RAW_STOCK_IN_HAND(TXNBase):
         pass
 
     @classmethod
-    def get_stock_and_update(cls,session,obj):
-        print("material ",obj.material)
-        print("materialsize ",obj.size)
+    def get_stock_and_update(cls,session,obj):       
         result = session.query(cls).filter_by(material_name=obj.material,size=obj.size).one()
         
-        if obj.txn_type == "addraw":
-            print(result.available_weight,type(result.available_weight))
-            print(obj.weight,type(obj.weight))
+        if obj.txn_type == "addraw":            
             result.available_weight = result.available_weight + Decimal(obj.weight)
-        elif obj.txn_type == "consume":
-            print(result.available_weight,type(result.available_weight))
-            print(obj.weight,type(obj.weight))
-            result.available_weight = result.available_weight - Decimal(obj.weight)
-            print(result.material_name , result.available_weight)
+        elif obj.txn_type == "consume":           
+            result.available_weight = result.available_weight - Decimal(obj.weight)            
         result.updated_date  = datetime.now(ist)
         return result
 
@@ -183,7 +175,6 @@ class RAW_MATERIAL_TXN(TXNBase):
         
     @classmethod 
     def setObj (cls,obj,json,industry,txn_type):
-        print("setObj",obj)
         
         obj.recdate = cls.formateDate(json['recdate'])
         obj.material = json['material']
@@ -191,8 +182,7 @@ class RAW_MATERIAL_TXN(TXNBase):
         obj.size  = json['size']
         obj.txn_type = txn_type
         obj.challan_no = json['challan']
-        obj.industry = industry        
-        print("setObj",obj.recdate)
+        obj.industry = industry     
         return obj
 
     @classmethod
@@ -213,7 +203,7 @@ class RAW_MATERIAL_TXN(TXNBase):
     @classmethod
     def get_txn_raw_by_challan_no(cls,session,challan_no,industry):
         result = session.query(cls).filter_by(challan_no = challan_no,industry=industry).all()
-        print(result)
+        
         if len(result)>0:
             return [obj.json() for obj in result]
         else:
@@ -237,11 +227,9 @@ class RAW_MATERIAL_TXN(TXNBase):
     def get_transaction_report(cls,session,industryType,fromDate,ToDate):
         fromDate= cls.formateDate(fromDate)
         ToDate = cls.formateDate(ToDate)
-        print("industryType",industryType)
-        print("fromDate",fromDate)
-        print("ToDate ",ToDate)
+        
         query = session.query(cls).filter(cls.recdate.between(fromDate,ToDate),cls.industry==industryType)
-        print(query)
+        
         result = query.all()
         data = [row.json() for row in result]
         return {
@@ -285,11 +273,9 @@ class SEMI_PRODUCT_IN_HAND(TXNBase):
     
     @classmethod
     def update_semi_product(cls,session,product,size,qty,action):
-        print("===Prouct ===",product)
-        print("size ====",size)
+        
         semiprod = session.query(cls).filter_by(product = product,size=size).one()
-        print("semiprod.stock ",semiprod.stock ,type(semiprod.stock))
-        print("qty ",qty ,type(qty))
+        
         if action == 'add':
             semiprod.stock = semiprod.stock + int(qty)
         elif action == 'deduct':
@@ -343,7 +329,7 @@ class SEMI_PRODUCT_TXN(TXNBase):
         
     @classmethod
     def insert_semi_txn(cls,session,json,industry,txn_type,consumed_by=None):
-        print("insert_semi_txn")
+        
         obj = SEMI_PRODUCT_TXN()
         #obj.txnid = "SEMI{0}{1}".format(uuid.uuid4().hex[:6].upper(),"".join(cls.formateDate(json['recdate']).split("-")))
         obj = cls.setObj(obj,json,industry,txn_type)
@@ -355,8 +341,7 @@ class SEMI_PRODUCT_TXN(TXNBase):
     
     @classmethod 
     def setObj (cls,obj,json,industry,txn_type):
-        print("setObj",obj)
-        
+     
         obj.date = cls.formateDate(json['recdate'])
         obj.product = json['product']
         obj.size = json.get('product_size',json['size'])
@@ -366,7 +351,6 @@ class SEMI_PRODUCT_TXN(TXNBase):
         obj.industry = industry
         obj.wastage = Decimal(json.get('wastage',0))
         
-        print("setObj",obj.date)
         return obj
 
     
@@ -390,10 +374,9 @@ class SEMI_PRODUCT_TXN(TXNBase):
     def get_transaction_report(cls,session,industryType,fromDate,ToDate):
         fromDate= cls.formateDate(fromDate)
         ToDate = cls.formateDate(ToDate)
-        print("fromDate",fromDate)
-        print("ToDate ",ToDate)
+       
         query = session.query(cls).filter(cls.date.between(fromDate,ToDate),cls.industry==industryType)
-        print(query)
+        
         result = query.all()
         data = [row.json() for row in result]
         return {
@@ -444,9 +427,8 @@ class IN2_PROD_STOCK_IN_HAND(TXNBase):
         result = session.query(cls).filter_by(product=product,size=size).one()
         semi_prod = result.cosumed_semi_products.split(",")
         
-        print("semi_prod",semi_prod)
         semi_prod_size = result.consumed_semi_sizes.split(",")
-        print("semi_prod_size",semi_prod_size)
+        
         semi_prod_list =[]
         for prod,size in zip(semi_prod,semi_prod_size):
             semi_prod_list.append({
@@ -456,9 +438,7 @@ class IN2_PROD_STOCK_IN_HAND(TXNBase):
         raw_mat = result.counsumed_raw.split(",")
         raw_mat_size = result.consumed_raw_sizes.split(",")
         raw_weight_per = result.raw_weight_per_product_in_percent.split(",")
-        print("raw_mat",raw_mat)
-        print("raw_mat_size",raw_mat_size)
-        print("raw_weight_per",raw_weight_per)
+       
         raw_material_list = []
         for raw ,size,weight_per_product in zip(raw_mat,raw_mat_size,raw_weight_per):
             raw_material_list.append({
@@ -475,13 +455,8 @@ class IN2_PROD_STOCK_IN_HAND(TXNBase):
         }
     
     @classmethod
-    def update_finished_product_stock(cls,session,product,size,qty,action):
-        print("product ",product)
-        print("size ",size)
-        print("qty ",qty)
-        finishprod = session.query(cls).filter_by(product=product,size=size).one()
-        print(finishprod)
-        print(finishprod.stock)
+    def update_finished_product_stock(cls,session,product,size,qty,action):       
+        finishprod = session.query(cls).filter_by(product=product,size=size).one()       
         if action == 'produce':
             finishprod.stock = finishprod.stock + int(qty)
         elif action == 'sell':
@@ -556,7 +531,7 @@ class Finished_PRODUCT_TXN(TXNBase):
     
     @classmethod
     def insert_finishprd_txn(cls,session,json,industry,txn_type,consumed_by=None):
-        print("insert_finishprd_txn====")
+       
         obj = Finished_PRODUCT_TXN()
         obj = cls.upsert_finish_txn(obj,json,industry,txn_type)
         if consumed_by:
@@ -575,8 +550,7 @@ class Finished_PRODUCT_TXN(TXNBase):
     def get_transaction_report(cls,session,industryType,fromDate,ToDate):
         fromDate= cls.formateDate(fromDate)
         ToDate = cls.formateDate(ToDate)
-        print("fromDate",fromDate)
-        print("ToDate ",ToDate)
+        
         query = session.query(cls).filter(cls.date.between(fromDate,ToDate),cls.industry==industryType)
         print(query)
         result = query.all()

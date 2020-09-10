@@ -47,9 +47,8 @@ class RegisterAPI:
         try:
             session = self.txndb.getSession()
             headerPayload = self.getRequest_header()            
-            print(conf)
-            table_name = conf[action]  
-            print("table_name",table_name)          
+          
+            table_name = conf[action]          
             nextid = Table_manager.get_next_id(session,table_name,headerPayload['industry'])
             resp = {"challan_no":nextid}
             code =200
@@ -203,11 +202,8 @@ class RegisterAPI:
             
             if record_status == 'new':
                 query = sesion.query(Table_manager).filter_by(table_name= RAW_STOCK_IN_HAND.__tablename__,industry_type = headerPayload['industry'])
-                print(query)
+                
                 result = query.one()
-                print(result.table_name)
-                print(result.industry_type)
-                print(result.generated_id)
                 result.generated_id = result.generated_id + 1
                 sesion.add(result)
               
@@ -252,7 +248,7 @@ class RegisterAPI:
                 "size_map":size_map
             }
             
-            print(listd)
+            #print(listd)
             code =200
         except Exception as e:
             print(e)
@@ -282,7 +278,6 @@ class RegisterAPI:
 
     def save_semi_product(self):
         try:
-            print("post_rawproduct")
             sesion = self.txndb.getSession()
             params = self.get_params()
 
@@ -292,7 +287,7 @@ class RegisterAPI:
             
             if record_status == 'new':
                 query = sesion.query(Table_manager).filter_by(table_name= SEMI_PRODUCT_IN_HAND.__tablename__,industry_type = headerPayload['industry'])
-                print(query)
+                
                 result = query.one()
                 print(result.table_name)
                 print(result.industry_type)
@@ -393,11 +388,8 @@ class RegisterAPI:
             
             if record_status == 'new':
                 query = sesion.query(Table_manager).filter_by(table_name= "finish_prod_tb",industry_type = headerPayload['industry'])
-                print(query)
+                
                 result = query.one()
-                print(result.table_name)
-                print(result.industry_type)
-                print(result.generated_id)
                 result.generated_id = result.generated_id + 1
                 sesion.add(result)
                 
@@ -409,13 +401,13 @@ class RegisterAPI:
                     #prod txn insert
                     #update finish prod
                     finiTxn = Finished_PRODUCT_TXN.insert_finishprd_txn(sesion,d,headerPayload['industry'],'produce')
-                    print("finished product ",finiTxn.id)
+                    
                     IN2_PROD_STOCK_IN_HAND.update_finished_product_stock(sesion,finiTxn.product,finiTxn.size,finiTxn.quantity,finiTxn.txn_type)
                     #semi txn insert
                     semi_prod_list = d['semiProdList']
                     for semi_prod in semi_prod_list:
                         semi_obj = SEMI_PRODUCT_TXN.insert_semi_txn(sesion,semi_prod,headerPayload['industry'],"deduct",consumed_by=finiTxn.id)
-                        print("semi_obj txn id ",semi_obj.txn_id)
+                        
                         SEMI_PRODUCT_IN_HAND.update_semi_product(sesion,semi_obj.product,semi_obj.size,semi_obj.qty,semi_obj.txn_type)
             
                     #raw prd insert
@@ -476,9 +468,9 @@ class RegisterAPI:
             listd ={}
             print('id ',id)
             if id == '1':
-                print("entered")
+                
                 listd = RAW_STOCK_IN_HAND.get_raw_stock_in_hand(sesion,headerPayload['industry'])
-                print("listd type -",listd)
+                
             elif id =='2':
                 listd = SEMI_PRODUCT_IN_HAND.get_stock_in_hand(sesion,headerPayload['industry'])
             elif id =='3':
