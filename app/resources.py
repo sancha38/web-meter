@@ -16,6 +16,9 @@ conf = {
                 "finishprod":"finish_prod_tb"
     }
 
+import time
+from datetime import datetime
+
 class RegisterAPI:
     def __init__(self, wsgi_path,application):
         API = "/v1/api/" 
@@ -107,6 +110,8 @@ class RegisterAPI:
                 encoded = jwt.encode(userObj.json(), 'secret', algorithm='HS256').decode('utf-8')
                 body = userObj.json()
                 body['token']= encoded
+                body['industry']= userObj.industry
+                
                 code =200
             else:
                 body = { "error": { "message": 'Username or password is incorrect' } }
@@ -384,9 +389,12 @@ class RegisterAPI:
                 result.generated_id = result.generated_id + 1
                 sesion.add(result)
                 
-            
+            loop =1
+            print("start" ,datetime.now())
             for d in params['data']:
                 status = d['status']
+                start = time.process_time()
+
                 if status == "new":                   
                     
                     #prod txn insert
@@ -407,10 +415,11 @@ class RegisterAPI:
                         obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,headerPayload['industry'],"consume",consumed_by=finiTxn.id)                    
                         sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))
                     
-                           
+                print("timeTaken {0} for {1}".format(time.process_time() - start,loop))
+                loop = loop+1             
             sesion.flush()
             sesion.commit()
-            
+            print("end",datetime.now())
             listd={"message": "successfully saved"}
             code =200
         except:

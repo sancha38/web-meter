@@ -1,1 +1,1 @@
-web: gunicorn wsgi:app --timeout 120 --max-requests 1200 --log-file -
+web: gunicorn wsgi:app --timeout 30 --max-requests 1200 --log-file -
