@@ -171,11 +171,14 @@ class RAW_MATERIAL_TXN(TXNBase):
     def formateDate(cls,dateObj):
         date= "{0}-{1}-{2}".format(dateObj['day'],dateObj['month'],dateObj['year'])
         return datetime.strptime(date, "%d-%m-%Y").date()
-        
+    
+    
+    def dateToJson(self):
+        return {'day':self.recdate.day,'month':self.recdate.month,'year':self.recdate.year}
         
     @classmethod 
     def setObj (cls,obj,json,industry,txn_type):
-        
+        print("===========setObj========",json)
         obj.recdate = cls.formateDate(json['recdate'])
         obj.material = json['material']
         obj.weight = json['weight']
@@ -201,9 +204,12 @@ class RAW_MATERIAL_TXN(TXNBase):
         return  col
         
     @classmethod
-    def get_txn_raw_by_challan_no(cls,session,challan_no,industry):
-        result = session.query(cls).filter_by(challan_no = challan_no,industry=industry).all()
-        
+    def get_txn_raw_by_challan_no(cls,session,challan_no,industry,consumed_by_id=None):
+        if consumed_by_id == None:
+            result = session.query(cls).filter_by(challan_no = challan_no,industry=industry).all()
+        else:
+            result = session.query(cls).filter_by(challan_no = challan_no,industry=industry,consumed_by_id=consumed_by_id).all()
+            
         if len(result)>0:
             return [obj.json() for obj in result]
         else:
@@ -213,7 +219,7 @@ class RAW_MATERIAL_TXN(TXNBase):
     def json(self):
         return {
             'industry':self.industry,
-            'recdate':self.recdate,
+            'recdate':self.dateToJson(),
             'material':self.material,
             'size': self.size,
             'weight':self.weight,
@@ -326,6 +332,8 @@ class SEMI_PRODUCT_TXN(TXNBase):
     def formateDate(cls,dateObj):
         date= "{0}-{1}-{2}".format(dateObj['day'],dateObj['month'],dateObj['year'])
         return datetime.strptime(date, "%d-%m-%Y").date()
+    def dateToJson(self):
+        return {'day':self.date.day,'month':self.date.month,'year':self.date.year}
         
     @classmethod
     def insert_semi_txn(cls,session,json,industry,txn_type,consumed_by=None):
@@ -341,16 +349,16 @@ class SEMI_PRODUCT_TXN(TXNBase):
     
     @classmethod 
     def setObj (cls,obj,json,industry,txn_type):
-     
+        print("============= semi setObj=============")
         obj.date = cls.formateDate(json['recdate'])
         obj.product = json['product']
-        obj.size = json.get('product_size',json['size'])
+        obj.size = json['size']
         obj.qty  = json['qty']
         obj.txn_type = txn_type
         obj.challan = json['challan']
         obj.industry = industry
         obj.wastage = Decimal(json.get('wastage',0))
-        
+        print("============= semi return setObj=============")
         return obj
 
     
@@ -358,10 +366,10 @@ class SEMI_PRODUCT_TXN(TXNBase):
     def show_data_options(cls):
         col = []
         
-        col.append({"data": "id","title": "ID","visible": True})
+        col.append({"data": "txn","title": "ID","visible": True})
         col.append({"data": "industry","title": "Industry","visible": True})
         col.append({"data": "challan","title": "Challan#","visible": True})       
-        col.append({"data": "date","title": "Record date","visible": True})
+        col.append({"data": "recdate","title": "Record date","visible": True})
         col.append({"data": "product","title": "Product","visible": True})       
         col.append({"data": "size","title": "Size","visible": True})
         col.append({"data": "qty","title": "Quantity","visible": True})
@@ -383,16 +391,37 @@ class SEMI_PRODUCT_TXN(TXNBase):
             "data":data
         }
     
+    @classmethod
+    def get_txn_by_challanNo(cls,sesion,challanId,industry,consumed_by=None):
+        if consumed_by == None:
+            result = sesion.query(cls).filter_by(challan=challanId,industry=industry).all()
+        else:
+            result = sesion.query(cls).filter_by(challan=challanId,industry=industry,consumed_by_id=consumed_by).all()
+            
+        if len(result)>0:
+            return [cls.searchChild(sesion,obj,industry) for obj in result]
+        else:
+            return []
+    
+    @classmethod
+    def searchChild(cls,session,obj,industry):
+        Json = obj.json()
+        result = RAW_MATERIAL_TXN.get_txn_raw_by_challan_no(session,obj.challan,industry,consumed_by_id=obj.txn_id)
+        print("result======",result)
+        if result != None and len(result)>0:
+            Json['rawMaterial']=result[0]
+        return Json
     def json(self):
         return {
-            "id" : self.txn_id,
+            "txn" : self.txn_id,
             "challan" : self.challan,
             "industry" : self.industry,
-            "date" : self.date,
+            "recdate" : self.dateToJson(),
             "product" : self.product,
             "size" : self.size,
             "qty" : self.qty,
             "wastage" : self.wastage,
+            "status":"pristin",
             "txn_type" : self.txn_type
         }
         
@@ -514,6 +543,26 @@ class Finished_PRODUCT_TXN(TXNBase):
     def formateDate(cls,dateObj):
         date= "{0}-{1}-{2}".format(dateObj['day'],dateObj['month'],dateObj['year'])
         return datetime.strptime(date, "%d-%m-%Y").date()
+    
+    def dateToJson(self):
+        return {'day':self.date.day,'month':self.date.month,'year':self.date.year}
+        
+    
+    @classmethod
+    def get_txn_by_challanNo(cls,sesion,challanId,industry):
+        result = sesion.query(cls).filter_by(challan=challanId,industry=industry).all()
+        if len(result)>0:
+            return [cls.searchChild(sesion,obj,industry) for obj in result]
+        else:
+            return []
+        
+    @classmethod
+    def searchChild(cls,session,obj,industry):
+        json = obj.Json()
+        json['semiProdList']=SEMI_PRODUCT_TXN.get_txn_by_challanNo(session,obj.challan,industry,consumed_by=obj.id)
+        json['rawMaterialList']=RAW_MATERIAL_TXN.get_txn_raw_by_challan_no(session,obj.challan,industry,consumed_by_id=obj.id)
+        return json
+        
         
     @classmethod
     def upsert_finish_txn(cls,obj,json,industry,txn_type):        
@@ -572,31 +621,42 @@ class Finished_PRODUCT_TXN(TXNBase):
         return {
             "data":data
         }
+    
+    @classmethod
+    def getSalesData(cls,sesion,challanId,industry):
+        print("challanId===",challanId)
+        result = sesion.query(cls).filter_by(challan=challanId,industry=industry).all()
+        if len(result)>0:
+            return [obj.Json() for obj in result]
+        else:
+            return []
+        
         
     def Json(self):
         return {
-            "id" : self.id,
-            "date": self.date,
+            "txn" : self.id,
+            "recdate": self.dateToJson(),
             "challan" :self.challan,
             "industry" :self.industry, 
             "product" : self.product,
             "size" : self.size,
-            "quantity" : self.quantity,
+            "stock" : self.quantity,
             "txn_type" : self.txn_type ,
-            "vehicle_number" : self.vehicle_number,
-            "description" : self.description
+            "vehicleNumber" : self.vehicle_number,
+            "description" : self.description,
+            "status":"pristine"
         }
     @classmethod
     def show_data_options(cls):
         col = []
         
-        col.append({"data": "id","title": "ID","visible": True})
+        col.append({"data": "txn","title": "ID","visible": True})
         col.append({"data": "industry","title": "Industry","visible": True})
         col.append({"data": "challan","title": "Challan#","visible": True})       
-        col.append({"data": "date","title": "Record date","visible": True})
+        col.append({"data": "recdate","title": "Record date","visible": True})
         col.append({"data": "product","title": "Product","visible": True})       
         col.append({"data": "size","title": "Size","visible": True})
-        col.append({"data": "quantity","title": "Quantity","visible": True})
+        col.append({"data": "stock","title": "Quantity","visible": True})
         col.append({"data": "txn_type","title": "Type of Transaction","visible": True})
         
         return  col
@@ -604,7 +664,7 @@ class Finished_PRODUCT_TXN(TXNBase):
     @classmethod
     def show_data_options_sales(cls):
         col = cls.show_data_options()
-        col.append({"data": "vehicle_number","title":"Vehicle#","visible": True})
+        col.append({"data": "vehicleNumber","title":"Vehicle#","visible": True})
         col.append({"data": "description","title":"Description","visible": True})
         return col
 

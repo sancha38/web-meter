@@ -37,10 +37,8 @@ class RegisterAPI:
         application.add_url_rule(API+'finishedproduct','finishedproductp',self.post_finishedproduct,methods=['POST'])
         application.add_url_rule(API+'isales','isales',self.save_sales,methods=['POST'])
         application.add_url_rule(API+"users/authenticate","authenticate",self.login,methods=['POST'])
-        application.add_url_rule(API+"searchChallan/Raw/<challanId>","challanRaw",self.challanRaw,methods=['GET'])
-        application.add_url_rule(API+"searchChallan/Fin/<challanId>","challanFin",self.challanFin,methods=['GET'])
-        application.add_url_rule(API+"searchChallan/Sal/<challanId>","challanSal",self.challanSal,methods=['GET'])
-
+        application.add_url_rule(API+"searchChallan/<ctype>/<challanId>","challanRaw",self.challanRaw,methods=['GET'])
+        
         application.add_url_rule(API+"reportoption","reportoption",self.getReportSearchOption,methods=['GET'])
 
         application.add_url_rule(API+"stockinhand/<id>","stockinhand/<id>",self.fetchStockinHand,methods=['GET'])
@@ -63,15 +61,30 @@ class RegisterAPI:
             self.txndb.closeSession(session)
             return Response(response=json.dumps(resp),status=code,mimetype='application/json')
         
-    def challanRaw(self,challanId):
+    def challanRaw(self,ctype,challanId):
         try:
             sesion = self.txndb.getSession()
-            challanId = 'Raw{}'.format(challanId)
+            listd =[]
             headerPayload = self.getRequest_header()
-            print(challanId)
-            listd = RAW_MATERIAL_TXN.get_txn_raw_by_challan_no(sesion,challanId,headerPayload['industry'])
+            if ctype == 'RAW':
+                listd = RAW_MATERIAL_TXN.get_txn_raw_by_challan_no(sesion,challanId,headerPayload['industry'])
+                code =200
+            elif ctype =='FINIS':
+                listd = Finished_PRODUCT_TXN.get_txn_by_challanNo(sesion,challanId,headerPayload['industry'])
+                code =200
+            elif ctype =='SEMI':
+                listd = SEMI_PRODUCT_TXN.get_txn_by_challanNo(sesion,challanId,headerPayload['industry'])
+                print("listd======",listd)
+                code = 200
+            elif ctype =='SALE':
+                listd = Finished_PRODUCT_TXN.getSalesData(sesion,challanId,headerPayload['industry'])                
+                code =200
+            else:
+                code =404
             
-            code =200
+                
+            
+            
         except Exception as e:
             print(e)
             listd = {"error": "there are some issue"}
@@ -294,10 +307,17 @@ class RegisterAPI:
                 
             for d in params['data']:
                 status  = d['status']
+                print("status",status)
                 if status == 'new':
-                    d['weight'] = Decimal(d['weight']) +Decimal(d['wastage'])
+                    print("====d====",d)
+                    raw = d['rawMaterial']
+                    
+                    raw['weight'] = Decimal(raw['weight']) +Decimal(d['wastage'])
+                    print("=====")
+                    
                     semi_obj = SEMI_PRODUCT_TXN.insert_semi_txn(sesion,d,headerPayload['industry'],"add")
-                    obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,d,headerPayload['industry'],"consume",consumed_by=semi_obj.txn_id)
+                    print("semi_obj",semi_obj)
+                    obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,headerPayload['industry'],"consume",consumed_by=semi_obj.txn_id)
                     sesion.add(obj)
                     sesion.add(semi_obj)
                     sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))
@@ -390,7 +410,7 @@ class RegisterAPI:
                 sesion.add(result)
                 
             loop =1
-            print("start" ,datetime.now())
+            
             for d in params['data']:
                 status = d['status']
                 start = time.process_time()
@@ -419,7 +439,7 @@ class RegisterAPI:
                 loop = loop+1             
             sesion.flush()
             sesion.commit()
-            print("end",datetime.now())
+            
             listd={"message": "successfully saved"}
             code =200
         except:
@@ -542,4 +562,66 @@ class RegisterAPI:
             self.txndb.closeSession(sesion)
             return Response(response=json.dumps(listd),status=code,mimetype='application/json')
 
+    
+    def post_finishedproduct_stream(self):
+        try:
+            print("post_rawproduct")
+            sesion = self.txndb.getSession()
+            params = self.get_params()
+
+            headerPayload = self.getRequest_header()
+           
+            record_status = params['status']
+            
+            if record_status == 'new':
+                query = sesion.query(Table_manager).filter_by(table_name= "finish_prod_tb",industry_type = headerPayload['industry'])
+                
+                result = query.one()
+                result.generated_id = result.generated_id + 1
+                sesion.add(result)
+                
+            loop =1
+            
+            for d in params['data']:
+                status = d['status']
+                start = time.process_time()
+
+                if status == "new":                   
+                    
+                    #prod txn insert
+                    #update finish prod
+                    finiTxn = Finished_PRODUCT_TXN.insert_finishprd_txn(sesion,d,headerPayload['industry'],'produce')
+                    
+                    IN2_PROD_STOCK_IN_HAND.update_finished_product_stock(sesion,finiTxn.product,finiTxn.size,finiTxn.quantity,finiTxn.txn_type)
+                    #semi txn insert
+                    semi_prod_list = d['semiProdList']
+                    for semi_prod in semi_prod_list:
+                        semi_obj = SEMI_PRODUCT_TXN.insert_semi_txn(sesion,semi_prod,headerPayload['industry'],"deduct",consumed_by=finiTxn.id)
+                        
+                        SEMI_PRODUCT_IN_HAND.update_semi_product(sesion,semi_obj.product,semi_obj.size,semi_obj.qty,semi_obj.txn_type)
+            
+                    #raw prd insert
+                    raw_material_list = d['rawMaterialList']
+                    for raw in raw_material_list:
+                        obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,headerPayload['industry'],"consume",consumed_by=finiTxn.id)                    
+                        sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))
+                    
+                print("timeTaken {0} for {1}".format(time.process_time() - start,loop))
+                loop = loop+1             
+            sesion.flush()
+            sesion.commit()
+            
+            listd={"message": "successfully saved"}
+            code =200
+        except:
+            print("Exception in user code:")
+            print('-'*60)
+            traceback.print_exc(file=sys.stdout)
+            print('-'*60)
+
+            listd = {"message": "there are some issue"}
+            code = 504
+        finally:
+            self.txndb.closeSession(sesion)
+            return Response(response=json.dumps(listd),status=code,mimetype='application/json')
         

@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response,json
 import requests
 
 app = Flask(__name__)
@@ -14,11 +14,13 @@ def some_long_calculation(number):
   return number
 
 @app.route('/')
-def check():
+def generate_large_csv():
     def generate():
-        some_long_calculation(1)
-        return {"message":"success"}
-    return Response(response=json.dumps(generate()),status=code,mimetype='application/json')
-
+        yield '{"processed": ['
+        for row in range(15):
+             yield json.dumps({"item_id":some_long_calculation(row)}) + ', '
+        yield ']}'
+       
+    return Response(generate(), content_type='application/json')
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
