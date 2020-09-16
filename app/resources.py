@@ -213,36 +213,34 @@ class RegisterAPI:
             print(params)
             record_status = params['status']
             
-            if record_status == 'new':
-                query = sesion.query(Table_manager).filter_by(table_name= RAW_STOCK_IN_HAND.__tablename__,industry_type = headerPayload['industry'])
-                
-                result = query.one()
-                result.generated_id = result.generated_id + 1
-                sesion.add(result)
-              
-                
-            for d in params['data']:
-                status  = d['status']
-                if status == 'new':
-                    obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,d,headerPayload['industry'],"addraw")
-                    sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))                   
-                elif status == 'update':
-                    obj = RAW_MATERIAL_TXN.update_raw(d,headerPayload['industry'],"addraw")
-                    sesion.add(obj)
-                    sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))
-                elif status == 'delete':
-                    obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,d,headerPayload['industry'],"addraw")
-                    sesion.add(obj)
-                    sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))           
             
-
-
+                    
+            if record_status == 'new':
+                Table_manager.increase_id(sesion,RAW_STOCK_IN_HAND.__tablename__,headerPayload['industry'])
+                
+                #sesion.add(result)
+                for d in params['data']:
+                    self.raw_insert_new(sesion,d,headerPayload['industry'])
+                    
+            
+            elif record_status == 'update':
+                for d in params['data']:
+                    status  = d['status']
+                    if status == 'new':
+                        self.raw_insert_new(sesion,d,headerPayload['industry'])
+                    elif status == 'update':
+                        self.raw_update(sesion,d,headerPayload['industry'])
+                for d in params['delete']:
+                    txn_id = d['txn']
+                    challan = d['challan']
+                    self.raw_delete(sesion,txn_id,challan,headerPayload['industry'])
             sesion.commit()
-            sesion.flush()
+            #sesion.flush()
             listd={"message": "successfully saved"}
             code =200
         except Exception as e:
             print("exception",e)
+            sesion.rollback()
             listd = {"message": "there are some issue"}
             code = 504
         finally:
@@ -250,7 +248,29 @@ class RegisterAPI:
             return Response(response=json.dumps(listd),status=code,mimetype='application/json')
 
         
-
+    def raw_insert_new(self,session,data,industry):
+        obj = RAW_MATERIAL_TXN.insert_raw_txn(session,data,industry,"addraw")        
+        session.add(RAW_STOCK_IN_HAND.get_stock_and_update(session,obj,Decimal(obj.weight)))  
+    
+    def raw_delete(self,session,txn_id,challan,industry,consumed_by_id=None):
+        print("delete ",txn_id,challan)
+        obj = RAW_MATERIAL_TXN.get_raw_txn(session,txn_id,challan,industry)
+        print("objobj ",obj)
+        RAW_STOCK_IN_HAND.delete_stock_in_hand(session,obj,Decimal(obj.weight))
+        print("delete ",txn_id,challan)
+        session.delete(obj)
+        
+        
+    
+    def raw_update(self,session,data,industry):
+        txn_id = data['txn']
+        challan = data['challan']
+        last_txn_weight, obj = RAW_MATERIAL_TXN.update_raw(session,txn_id,challan,data)
+        net_updated_weight = Decimal(obj.weight) -last_txn_weight
+        session.add(RAW_STOCK_IN_HAND.get_stock_and_update(session,obj,net_updated_weight))  
+    
+        print("raw_update ",data)
+    
     def rawproduct(self):
         try:
             sesion = self.txndb.getSession()
@@ -295,34 +315,29 @@ class RegisterAPI:
             params = self.get_params()
 
             headerPayload = self.getRequest_header()
-            print(params)
+            #print(params)
             record_status = params['status']
             
             if record_status == 'new':
-                query = sesion.query(Table_manager).filter_by(table_name= SEMI_PRODUCT_IN_HAND.__tablename__,industry_type = headerPayload['industry'])
+                Table_manager.increase_id(sesion,SEMI_PRODUCT_IN_HAND.__tablename__,headerPayload['industry'])
                 
-                result = query.one()
-                result.generated_id = result.generated_id + 1
-                sesion.add(result)
+                #sesion.add(result)
+                for d in params['data']:
+                    self.semi_insert_new(sesion,d,headerPayload['industry'])
+                    
+         
+            elif record_status == 'update':
+                for d in params['data']:
+                    status  = d['status']
+                    if status == 'new':
+                        self.semi_insert_new(sesion,d,headerPayload['industry'])
+                    elif status == 'update':
+                        self.update_semi(sesion,d,headerPayload['industry'])
+                for d in params['delete']:                    
+                    
+                    self.delete_semi(sesion,d,headerPayload['industry'])
                 
-            for d in params['data']:
-                status  = d['status']
-                print("status",status)
-                if status == 'new':
-                    print("====d====",d)
-                    raw = d['rawMaterial']
-                    
-                    raw['weight'] = Decimal(raw['weight']) +Decimal(d['wastage'])
-                    print("=====")
-                    
-                    semi_obj = SEMI_PRODUCT_TXN.insert_semi_txn(sesion,d,headerPayload['industry'],"add")
-                    print("semi_obj",semi_obj)
-                    obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,headerPayload['industry'],"consume",consumed_by=semi_obj.txn_id)
-                    sesion.add(obj)
-                    sesion.add(semi_obj)
-                    sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))
-                    SEMI_PRODUCT_IN_HAND.update_semi_product(sesion,semi_obj.product,semi_obj.size,semi_obj.qty,semi_obj.txn_type)
-            
+           
             print("comming here")
             sesion.commit()
             sesion.flush()
@@ -336,13 +351,61 @@ class RegisterAPI:
             self.txndb.closeSession(sesion)
             return Response(response=json.dumps(listd),status=code,mimetype='application/json')
 
+    def semi_insert_new(self,sesion,data,industry):
+            raw = data['rawMaterial']
+            raw['weight'] = Decimal(raw['weight']) +Decimal(data['wastage'])                    
+            semi_obj = SEMI_PRODUCT_TXN.insert_semi_txn(sesion,data,industry,"add")
+            print("semi_obj",semi_obj)
+            obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,industry,"consume",consumed_by=semi_obj.txn_id)
+            sesion.add(obj)
+            sesion.add(semi_obj)
+            sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj,Decimal(obj.weight)))
+            SEMI_PRODUCT_IN_HAND.update_semi_product(sesion,semi_obj.product,semi_obj.size,semi_obj.qty,semi_obj.txn_type)
+            
+        
+    
+    def update_semi(self,session,data,industry):
+        print("for update =========",data)
+        txn_id = data['txn']
+        challan = data['challan']
+        raw = data['rawMaterial']
+        oldTxnObj = SEMI_PRODUCT_TXN.get_semi_by_challan_txn_id(session,txn_id,challan)
+        shobjold = SEMI_PRODUCT_IN_HAND.get_semi_product(session,oldTxnObj.product,oldTxnObj.size,oldTxnObj.industry)
+        shobjold.stock = shobjold.stock - int(oldTxnObj.qty)
+        #session.update(shobjold)
+        oldTxnObj =SEMI_PRODUCT_TXN.setObj (oldTxnObj,data,oldTxnObj.industry,oldTxnObj.txn_type)
+        
+        newSemi = SEMI_PRODUCT_IN_HAND.get_semi_product(session,oldTxnObj.product,oldTxnObj.size,oldTxnObj.industry)
+        newSemi.stock = newSemi.stock + int(oldTxnObj.qty)
+        
+        raw = data['rawMaterial']
+        raw['weight'] = Decimal(raw['weight']) +Decimal(oldTxnObj.wastage) 
+        rawOldObj = RAW_MATERIAL_TXN.get_raw_txn(session,raw['txn'],challan,industry,oldTxnObj.txn_id)
+        updated = RAW_STOCK_IN_HAND.delete_stock_in_hand(session,rawOldObj,Decimal(rawOldObj.weight),consumed_by=oldTxnObj.txn_id)
+        rawOldObj = RAW_MATERIAL_TXN.setObj(rawOldObj,raw,rawOldObj.industry,rawOldObj.txn_type)
+        newR = RAW_STOCK_IN_HAND.get_stock_and_update(session,rawOldObj,Decimal(rawOldObj.weight))
+              
+        
+    
+    def delete_semi(self,session,data,industry):
+        txn_id = data['txn']
+        challan = data['challan']
+        raw = data['rawMaterial']
+        oldTxnObj = SEMI_PRODUCT_TXN.get_semi_by_challan_txn_id(session,txn_id,challan)
+        shobjold = SEMI_PRODUCT_IN_HAND.get_semi_product(session,oldTxnObj.product,oldTxnObj.size,oldTxnObj.industry)
+        shobjold.stock = shobjold.stock - int(oldTxnObj.qty)
+        rawOldObj = RAW_MATERIAL_TXN.get_raw_txn(session,raw['txn'],challan,industry,oldTxnObj.txn_id)
+        updated = RAW_STOCK_IN_HAND.delete_stock_in_hand(session,rawOldObj,Decimal(rawOldObj.weight),consumed_by=oldTxnObj.txn_id)
+        session.delete(rawOldObj)
+        session.delete(oldTxnObj)
+        
         
     def getmappedraw(self):
         try:
             sesion = self.txndb.getSession()
             headerPayload = self.getRequest_header()
             params = self.get_params()
-            print(params)
+            #print(params)
             cfg = SEMI_PRODUCT_IN_HAND.get_semi_product_cfg(sesion,params['product'],params['size'])
             code = 200
         except Exception as e:
@@ -433,7 +496,7 @@ class RegisterAPI:
                     raw_material_list = d['rawMaterialList']
                     for raw in raw_material_list:
                         obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,headerPayload['industry'],"consume",consumed_by=finiTxn.id)                    
-                        sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))
+                        sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj,Decimal(obj.weight)))
                     
                 print("timeTaken {0} for {1}".format(time.process_time() - start,loop))
                 loop = loop+1             
@@ -604,7 +667,7 @@ class RegisterAPI:
                     raw_material_list = d['rawMaterialList']
                     for raw in raw_material_list:
                         obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,headerPayload['industry'],"consume",consumed_by=finiTxn.id)                    
-                        sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj))
+                        sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj,Decimal(obj.weight)))
                     
                 print("timeTaken {0} for {1}".format(time.process_time() - start,loop))
                 loop = loop+1             

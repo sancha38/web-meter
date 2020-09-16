@@ -196,6 +196,9 @@ THE SOFTWARE.
 datatables.net-responsive-bs4
 MIT
 
+font-awesome
+(OFL-1.1 AND MIT)
+
 jwt-decode
 MIT
 The MIT License (MIT)

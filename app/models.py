@@ -10,6 +10,7 @@ import uuid
 from sqlalchemy import PrimaryKeyConstraint,Boolean ,REAL, Column,TEXT, String, Float, Integer, VARCHAR, TIMESTAMP, BigInteger,Numeric,Date
 from sqlalchemy.ext.declarative import declarative_base
 
+from sqlalchemy import desc
 
 TXNBase = declarative_base()
 import math
@@ -34,7 +35,7 @@ class GlobalProductCfg(TXNBase):
     @classmethod
     def list_global_product_cfg(cls,session):
         query = session.query(cls).all()
-        print(query)
+      
         cfgJson = {}
         for obj in query:
             cfgJson[obj.product_type]=obj.raw_material_arr.split(",")
@@ -70,6 +71,11 @@ class Table_manager(TXNBase):
         print(result)
         return result[0]
     
+    @classmethod
+    def increase_id(cls,session,table_name,industry):
+        id = Table_manager.get_next_id(session,table_name,industry)
+        query = session.query(cls).filter_by(table_name= table_name,industry_type = industry)
+        query.update({"generated_id": id + 1})
     
 class RAW_STOCK_IN_HAND(TXNBase):
     __tablename__= 'raw_material_tb'
@@ -115,7 +121,7 @@ class RAW_STOCK_IN_HAND(TXNBase):
     
     @classmethod
     def listRawItemSize(cls,session,industryType):
-        result =  session.query(cls.material_name,cls.size).filter_by(industry=industryType).all()
+        result =  session.query(cls.material_name,cls.size).filter_by(industry=industryType).order_by(cls.material_name.asc(),cls.size.asc()).all()
         
         size = {}
         for obj in result:
@@ -125,17 +131,23 @@ class RAW_STOCK_IN_HAND(TXNBase):
         return size
 
     @classmethod
-    def upate_stock_in_hand(cls,session):
-        pass
-
+    def delete_stock_in_hand(cls,session,obj,weight,consumed_by=None):        
+        result = session.query(cls).filter_by(material_name=obj.material,size=obj.size).one()
+        print(result)
+        if consumed_by:            
+            result.available_weight = result.available_weight + weight
+        else:            
+            result.available_weight = result.available_weight - weight
+        return result
+        
     @classmethod
-    def get_stock_and_update(cls,session,obj):       
+    def get_stock_and_update(cls,session,obj,weight):       
         result = session.query(cls).filter_by(material_name=obj.material,size=obj.size).one()
         
         if obj.txn_type == "addraw":            
-            result.available_weight = result.available_weight + Decimal(obj.weight)
+            result.available_weight = result.available_weight + weight
         elif obj.txn_type == "consume":           
-            result.available_weight = result.available_weight - Decimal(obj.weight)            
+            result.available_weight = result.available_weight - weight            
         result.updated_date  = datetime.now(ist)
         return result
 
@@ -163,9 +175,11 @@ class RAW_MATERIAL_TXN(TXNBase):
         return obj
     
     @classmethod
-    def update_raw(cls,session,txnid,json):
-        obj = session.query(cls).filter_by(txnid = txnid).one()
-        return cls.setObj(obj,json,obj.industry,obj.txn_type)
+    def update_raw(cls,session,txn_id,challan,json):
+        obj = session.query(cls).filter_by(txnid = txn_id,challan_no=challan).first()
+        last_txn_weight = obj.weight
+        obj = cls.setObj(obj,json,obj.industry,obj.txn_type)
+        return last_txn_weight,obj
     
     @classmethod
     def formateDate(cls,dateObj):
@@ -228,7 +242,17 @@ class RAW_MATERIAL_TXN(TXNBase):
             'txn_type':self.txn_type,
             'status':'pristine'
         }
-
+    @classmethod
+    def get_raw_txn(cls,session,txn_id,challan,industry,consumed_by_id=None):
+        print("get_raw_txn",txn_id,challan,industry)
+        query = session.query(cls).filter(cls.txnid == txn_id).\
+            filter(cls.challan_no ==challan).\
+                filter(cls.industry == industry)
+        if consumed_by_id:
+           query.filter(cls.consumed_by_id == consumed_by_id) 
+        print(query)
+        return query.first()
+    
     @classmethod
     def get_transaction_report(cls,session,industryType,fromDate,ToDate):
         fromDate= cls.formateDate(fromDate)
@@ -256,7 +280,8 @@ class SEMI_PRODUCT_IN_HAND(TXNBase):
     
     @classmethod
     def get_semi_finished_product_map(cls,session,industryType):
-        result = session.query(cls).filter_by(industry = industryType).all()
+        
+        result = session.query(cls).filter_by(industry = industryType).order_by(cls.product.asc(),cls.size.asc()).all()
         print(result)
         product_map = {}
         for obj in result:
@@ -315,6 +340,11 @@ class SEMI_PRODUCT_IN_HAND(TXNBase):
             "stock":self.stock,
             "ltd":self.updated_date
         }        
+    
+    @classmethod
+    def get_semi_product(cls,session,product,size,industry):
+        return session.query(cls).filter_by(product=product,size=size,industry = industry).first()
+        
 class SEMI_PRODUCT_TXN(TXNBase):
     __tablename__ = 'semi_finished_txn_tb'
     txn_id = Column(Integer,primary_key= True)
@@ -394,10 +424,12 @@ class SEMI_PRODUCT_TXN(TXNBase):
     @classmethod
     def get_txn_by_challanNo(cls,sesion,challanId,industry,consumed_by=None):
         if consumed_by == None:
+            print("if ",challanId, industry)
             result = sesion.query(cls).filter_by(challan=challanId,industry=industry).all()
         else:
             result = sesion.query(cls).filter_by(challan=challanId,industry=industry,consumed_by_id=consumed_by).all()
-            
+            print("else ")
+        print("result ",result)
         if len(result)>0:
             return [cls.searchChild(sesion,obj,industry) for obj in result]
         else:
@@ -409,7 +441,9 @@ class SEMI_PRODUCT_TXN(TXNBase):
         result = RAW_MATERIAL_TXN.get_txn_raw_by_challan_no(session,obj.challan,industry,consumed_by_id=obj.txn_id)
         print("result======",result)
         if result != None and len(result)>0:
-            Json['rawMaterial']=result[0]
+            raw =    result[0]
+            raw['weight'] = raw['weight'] - obj.wastage
+            Json['rawMaterial']=raw
         return Json
     def json(self):
         return {
@@ -424,6 +458,10 @@ class SEMI_PRODUCT_TXN(TXNBase):
             "status":"pristin",
             "txn_type" : self.txn_type
         }
+    @classmethod
+    def get_semi_by_challan_txn_id(cls,session,txn,challan):
+        return session.query(cls).filter_by(txn_id=txn,challan=challan).first()
+        
         
 class IN2_PROD_STOCK_IN_HAND(TXNBase):
     __tablename__= 'finished_prod_ind2_tb'
@@ -442,8 +480,7 @@ class IN2_PROD_STOCK_IN_HAND(TXNBase):
     @classmethod
     def get_finished_prod_list(cls,session,industryType):
         result = session.query(cls).filter_by(industry = industryType).all()
-        print(result)
-        
+      
         size = {}
         for obj in result:
             size_arr = size.get(obj.product,[])
@@ -601,7 +638,7 @@ class Finished_PRODUCT_TXN(TXNBase):
         ToDate = cls.formateDate(ToDate)
         
         query = session.query(cls).filter(cls.date.between(fromDate,ToDate),cls.industry==industryType)
-        print(query)
+        
         result = query.all()
         data = [row.Json() for row in result]
         return {
@@ -612,10 +649,9 @@ class Finished_PRODUCT_TXN(TXNBase):
     def get_Sales_report(cls,session,industryType,fromDate,ToDate):
         fromDate= cls.formateDate(fromDate)
         ToDate = cls.formateDate(ToDate)
-        print("fromDate",fromDate)
-        print("ToDate ",ToDate)
+       
         query = session.query(cls).filter(cls.date.between(fromDate,ToDate),cls.industry==industryType,cls.txn_type=="sell")
-        print(query)
+       
         result = query.all()
         data = [row.Json() for row in result]
         return {
@@ -677,11 +713,11 @@ class USER(TXNBase):
 
     @classmethod
     def get_user_by_name(cls,session,username):
-        print(username)
+       
         query = session.query(cls).filter_by(username=username)
-        print(query)
+        
         result = query.one()
-        print(result)
+        
         return result
     
     def json(self):
