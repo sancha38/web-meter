@@ -3,8 +3,12 @@ from flask import request, Response, json
 
 from app.models import GlobalProductCfg,RAW_MATERIAL_TXN,RAW_PRODUCT_TXN_MPG
 from app.models import RAW_STOCK_IN_HAND,IN2_PROD_STOCK_IN_HAND,USER,Finished_PRODUCT_TXN
-from app.models import Table_manager,SEMI_PRODUCT_IN_HAND,SEMI_PRODUCT_TXN
+from app.models import Table_manager,SEMI_PRODUCT_IN_HAND,SEMI_PRODUCT_TXN,FINISH_PRODUCT_IND1
+from app.service_layer import Finish_Product_Service,Sales_Service
 from sqlalchemy.orm.exc import NoResultFound
+
+
+from app.service_layer_industry1 import Finish_Product_IN1_Service
 from decimal import Decimal,getcontext
 getcontext().prec = 3
 import sys, traceback
@@ -153,25 +157,28 @@ class RegisterAPI:
             headerPayload = self.getRequest_header()
             print(params)
             record_status = params['status']
+            industry = headerPayload['industry']
             
             if record_status == 'new':
-                query = sesion.query(Table_manager).filter_by(table_name= "sales_tb",industry_type = headerPayload['industry'])
-                print(query)
-                result = query.one()
-                result.generated_id = result.generated_id + 1
-                sesion.add(result)
+                Table_manager.increase_id(sesion,'sales_tb',industry)
                 
-            
-            for d in params['data']:
-                status = d['status']
-                if status == "new":                  
-                    finiTxn = Finished_PRODUCT_TXN.insert_finishprd_txn(sesion,d,headerPayload['industry'],'sell')
-                    print("finished product ",finiTxn.id)
-                    IN2_PROD_STOCK_IN_HAND.update_finished_product_stock(sesion,finiTxn.product,finiTxn.size,finiTxn.quantity,finiTxn.txn_type)
+                #sesion.add(result)
+                for sales_txn in params['data']:
+                    Sales_Service.insert_sales(sesion,sales_txn,industry)
                     
-                           
-            sesion.flush()
+            
+            elif record_status == 'update':
+                for sales_txn in params['data']:
+                    status  = sales_txn['status']
+                    if status == 'new':
+                        Sales_Service.insert_sales(sesion,sales_txn,industry)
+                    elif status == 'update':
+                        Sales_Service.update_sales(sesion,sales_txn,industry)
+                for sales_txn in params['delete']:
+                    Sales_Service.delete_sales(sesion,sales_txn,industry)
             sesion.commit()
+            sesion.flush()
+            
             
             listd={"message": "successfully saved"}
             code =200
@@ -422,12 +429,23 @@ class RegisterAPI:
         try:
             sesion = self.txndb.getSession()
             headerPayload = self.getRequest_header()
-            size_map = IN2_PROD_STOCK_IN_HAND.get_finished_prod_list(sesion,headerPayload['industry'])
-            
-            listd = listd ={
-                "product":list(size_map.keys()),
-                "sizes":size_map
-            }
+            industry = headerPayload['industry']
+            print("inside finished product",industry)
+             
+            if industry == 'industry2':
+                size_map = IN2_PROD_STOCK_IN_HAND.get_finished_prod_list(sesion,industry)
+                listd ={
+                    "product":list(size_map.keys()),
+                    "sizes":size_map}
+            elif industry =='industry1':
+                print("innside else ==")
+                plist = Finish_Product_IN1_Service.get_product_list(sesion)
+                raw = Finish_Product_IN1_Service.get_raw_product_conf(sesion)
+                print("plist-==",plist)              
+                listd ={
+                   "product": plist,
+                   "raw":raw
+                }
             code =200
         except Exception as e:
             #print(e)
@@ -461,45 +479,24 @@ class RegisterAPI:
             sesion = self.txndb.getSession()
             params = self.get_params()
 
-            headerPayload = self.getRequest_header()
-           
-            record_status = params['status']
-            
-            if record_status == 'new':
-                query = sesion.query(Table_manager).filter_by(table_name= "finish_prod_tb",industry_type = headerPayload['industry'])
-                
-                result = query.one()
-                result.generated_id = result.generated_id + 1
-                sesion.add(result)
-                
-            loop =1
-            
-            for d in params['data']:
-                status = d['status']
-                start = time.process_time()
+            headerPayload = self.getRequest_header()           
+            record_status = params['status']          
 
-                if status == "new":                   
-                    
-                    #prod txn insert
-                    #update finish prod
-                    finiTxn = Finished_PRODUCT_TXN.insert_finishprd_txn(sesion,d,headerPayload['industry'],'produce')
-                    
-                    IN2_PROD_STOCK_IN_HAND.update_finished_product_stock(sesion,finiTxn.product,finiTxn.size,finiTxn.quantity,finiTxn.txn_type)
-                    #semi txn insert
-                    semi_prod_list = d['semiProdList']
-                    for semi_prod in semi_prod_list:
-                        semi_obj = SEMI_PRODUCT_TXN.insert_semi_txn(sesion,semi_prod,headerPayload['industry'],"deduct",consumed_by=finiTxn.id)
-                        
-                        SEMI_PRODUCT_IN_HAND.update_semi_product(sesion,semi_obj.product,semi_obj.size,semi_obj.qty,semi_obj.txn_type)
-            
-                    #raw prd insert
-                    raw_material_list = d['rawMaterialList']
-                    for raw in raw_material_list:
-                        obj = RAW_MATERIAL_TXN.insert_raw_txn(sesion,raw,headerPayload['industry'],"consume",consumed_by=finiTxn.id)                    
-                        sesion.add(RAW_STOCK_IN_HAND.get_stock_and_update(sesion,obj,Decimal(obj.weight)))
-                    
-                print("timeTaken {0} for {1}".format(time.process_time() - start,loop))
-                loop = loop+1             
+            if record_status == 'new':
+                Table_manager.increase_id(sesion,"finish_prod_tb",headerPayload['industry'])
+                for d in params['data']:
+                    Finish_Product_Service.insert_finish_product_txn(sesion,d,headerPayload['industry'])
+            elif record_status == 'update':
+                for d in params['data']:
+                    status  = d['status']
+                    if status == 'new':
+                        Finish_Product_Service.insert_finish_product_txn(sesion,d,headerPayload['industry'])
+                    elif status == 'update':
+                        Finish_Product_Service.update_finish_product(sesion,d,headerPayload['industry'])
+                for d in params['delete']:
+                    Finish_Product_Service.delete_finish_product(sesion,d,headerPayload['industry'])
+
+           
             sesion.flush()
             sesion.commit()
             
@@ -557,7 +554,10 @@ class RegisterAPI:
             elif id =='2':
                 listd = SEMI_PRODUCT_IN_HAND.get_stock_in_hand(sesion,headerPayload['industry'])
             elif id =='3':
-                listd = IN2_PROD_STOCK_IN_HAND.get_stock_in_hand(sesion,headerPayload['industry'])
+                if headerPayload['industry'] == 'industry2':
+                    listd = IN2_PROD_STOCK_IN_HAND.get_stock_in_hand(sesion,headerPayload['industry'])
+                else:
+                    listd=FINISH_PRODUCT_IND1.get_stock_in_hand(sesion)
             code =200
         except Exception as e:
             print(e)
@@ -642,9 +642,9 @@ class RegisterAPI:
                 result = query.one()
                 result.generated_id = result.generated_id + 1
                 sesion.add(result)
-                
-            loop =1
             
+    
+
             for d in params['data']:
                 status = d['status']
                 start = time.process_time()

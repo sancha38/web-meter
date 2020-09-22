@@ -726,3 +726,30 @@ class USER(TXNBase):
             'role':self.role,
             'industry':self.industry
         }
+
+class FINISH_PRODUCT_IND1(TXNBase):
+    __tablename__ = 'finished_prod_ind1_tb'
+    id = Column(Integer,primary_key=True)
+    product = Column(String(40))
+    stock = Column(Integer)
+    updated_date = Column(TIMESTAMP)
+    @classmethod
+    def get_stock_in_hand(cls,session):
+        result = session.query(cls).all()
+        data= [semi.toJson() for semi in result]
+        
+        return {
+            "data":data}
+        
+
+    def toJson(self):
+        return {
+            "id": self.id,
+            "industry":"industry1",
+            "product": self.product,
+            "size":"N/A",
+            "stock":self.stock,
+            "ltd":self.updated_date
+        } 
+    
+    
